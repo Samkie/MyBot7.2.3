@@ -241,7 +241,7 @@ Global $btnAttNowDB, $btnAttNowLB
 ; GUI
 Global $g_ahLblStatsSwitchTotal[4]
 Global $g_ahLblStatsSwitchGPH[4]
-Global $grpMySwitch, $chkEnableMySwitch, $chkProfileImage, $g_hLblProfileName, $arrowleft2, $arrowright2, $btnMakeSwitchADBFolder, $cmbSwitchMethod
+Global $grpMySwitch, $chkEnableMySwitch, $chkProfileImage, $g_hLblProfileName, $arrowleft2, $arrowright2, $btnMakeSwitchADBFolder, $cmbSwitchMethod, $btnPushshared_prefs
 ;Global $chkUseADBLoadVillage
 Global $chkEnableAcc[8], $cmbWithProfile[8], $cmbAtkDon[8], $cmbStayTime[8], $chkPriority[8]
 

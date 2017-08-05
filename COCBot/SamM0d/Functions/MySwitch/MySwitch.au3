@@ -517,7 +517,7 @@ Func DoSwitchAcc()
 				If $g_iSamM0dDebug = 1 Then SetLog("$aSwitchList[$iTempNextACC][4]: " & $aSwitchList[$iTempNextACC][4])
 
 				If $iTempNextACC <> - 1 Then
-					If loadVillageFrom($aSwitchList[$iTempNextACC][3], $aSwitchList[$iTempNextACC][4]) = True Then
+					If loadVillageFrom($aSwitchList[$iTempNextACC][3]) = True Then
 						$iCurActiveAcc = $iNextAcc
 						DoVillageLoadSucess($iCurActiveAcc)
 					Else
@@ -1132,7 +1132,42 @@ Func btnMakeSwitchADBFolder()
 	EndIf
 EndFunc
 
-Func loadVillageFrom($Profilename, $iSlot)
+Func btnPushshared_prefs()
+	Local $currentRunState = $g_bRunState
+	$g_bRunState = True
+
+	SetLog("Start")
+	PoliteCloseCoC()
+	If _Sleep(1500) Then Return False
+	Local $lResult
+	Local $sMyProfilePath4shared_prefs = @ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\shared_prefs"
+	Local $hostPath = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & "shared_prefs"
+	Local $androidPath = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/") & "shared_prefs/"
+
+	;If FileExists($sMyProfilePath4shared_prefs & "\localPrefs.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\localPrefs.xml")
+
+	If StringInStr($g_sEmulatorInfo4MySwitch,"bluestacks") Then
+		$lResult = DirCopy($sMyProfilePath4shared_prefs, $hostPath, 1)
+		If $lResult = 1 Then
+			$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; " & _
+			"cp -r " & $androidPath & "* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; exit; exit'" & Chr(34), "", @SW_HIDE)
+			DirRemove($hostPath, 1)
+		EndIf
+	Else
+		$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " push " & Chr(34) & $sMyProfilePath4shared_prefs & Chr(34) & " /data/data/" & $g_sAndroidGamePackage & "/shared_prefs", "", @SW_HIDE)
+	EndIf
+
+	If $lResult = 0 Then
+		SetLog("shared_prefs copy to emulator should be okay.", $COLOR_INFO)
+
+		OpenCoC()
+		Wait4Main()
+	EndIf
+	SetLog("Finish")
+	$g_bRunState = $currentRunState
+EndFunc
+
+Func loadVillageFrom($Profilename)
 	PoliteCloseCoC()
 	If _Sleep(1500) Then Return False
 	Local $lResult

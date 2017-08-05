@@ -209,19 +209,23 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 	;If $bNowWaitingConfirm = False Then
 		If _ColorCheck(_GetPixelColor($aButtonVillageCancel[4], $aButtonVillageCancel[5],$g_bNoCapturePixel), Hex($aButtonVillageCancel[6], 6), $aButtonVillageCancel[7]) And _
 			_ColorCheck(_GetPixelColor($aButtonVillageLoad[4], $aButtonVillageLoad[5],$g_bNoCapturePixel), Hex($aButtonVillageLoad[6], 6), $aButtonVillageLoad[7]) Then
-			If $ichkProfileImage = 1 Then
-				Local $iResult
-				$iResult = DoLoadVillage()
-				If $iResult <> 1 And $iResult <> 2 Then Return False
-				If _Sleep(500) Then Return False
-				If $g_iSamM0dDebug = 1 Then SetLog("$iResult: " & $iResult)
-				If _Sleep(5) Then Return False
-				If $iResult = 1 Then
-					If DoConfirmVillage() = False Then Return False
+			If $icmbSwitchMethod = 0 Then
+				If $ichkProfileImage = 1 Then
+					Local $iResult
+					$iResult = DoLoadVillage()
+					If $iResult <> 1 And $iResult <> 2 Then Return False
+					If _Sleep(500) Then Return False
+					If $g_iSamM0dDebug = 1 Then SetLog("$iResult: " & $iResult)
+					If _Sleep(5) Then Return False
+					If $iResult = 1 Then
+						If DoConfirmVillage() = False Then Return False
+					Else
+						ClickP($aAway,1,0)
+					EndIf
+					Wait4Main()
 				Else
-					ClickP($aAway,1,0)
+					Click($aButtonVillageCancel[0],$aButtonVillageCancel[1],1,0,"#VL01")
 				EndIf
-				Wait4Main()
 			Else
 				Click($aButtonVillageCancel[0],$aButtonVillageCancel[1],1,0,"#VL01")
 			EndIf
