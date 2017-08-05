@@ -698,34 +698,38 @@ Func runBot() ;Bot that runs everything in order
 			If $g_bIsClientSyncError = False And $g_bIsSearchLimit = False And ($g_bQuickAttack = False) Then
 				DoSwitchAcc()
 				If $g_bRestart = True Then ContinueLoop
-			EndIf
-			$iDoPerformAfterSwitch = True
 
-			If _Sleep($DELAYRUNBOT1) Then Return
-			checkMainScreen()
-			If $g_bRestart = True Then ContinueLoop
+				If _Sleep($DELAYRUNBOT1) Then Return
+				checkMainScreen()
+				If $g_bRestart = True Then ContinueLoop
 
-			If $ichkProfileImage = 1 Then ; check with image is that village load correctly
-				If $bAvoidSwitch = False And $bChangeNextAcc = True Then
-					If checkProfileCorrect() = True Then
-						SetLog("Profile match with village.png, profile loaded correctly.", $COLOR_INFO)
-						$iCheckAccProfileError = 0
-						;$bProfileImageChecked = True
-					Else
-						SetLog("Profile not match with village.png, profile load failed.", $COLOR_ERROR)
-						$iCheckAccProfileError += 1
-						If $iCheckAccProfileError > 2 Then
+				If $ichkProfileImage = 1 Then ; check with image is that village load correctly
+					If $bAvoidSwitch = False And $bChangeNextAcc = True Then
+						If checkProfileCorrect() = True Then
+							SetLog("Profile match with village.png, profile loaded correctly.", $COLOR_INFO)
 							$iCheckAccProfileError = 0
-							DoVillageLoadFailed()
+							;$bProfileImageChecked = True
+						Else
+							SetLog("Profile not match with village.png, profile load failed.", $COLOR_ERROR)
+							$iCheckAccProfileError += 1
+							If $iCheckAccProfileError > 2 Then
+								$iCheckAccProfileError = 0
+								DoVillageLoadFailed()
+							EndIf
+							$iCurActiveAcc = -1
+							ClickP($aAway,1,0)
+							If _Sleep(1000) Then Return True
+							ContinueLoop
 						EndIf
-						$iCurActiveAcc = -1
-						ClickP($aAway,1,0)
-						If _Sleep(1000) Then Return True
-						ContinueLoop
 					EndIf
 				EndIf
+				If $g_iTownHallLevel = 0 Then BotDetectFirstTime()
+			Else
+				If _Sleep($DELAYRUNBOT1) Then Return
+				checkMainScreen()
+				If $g_bRestart = True Then ContinueLoop
 			EndIf
-			If $g_iTownHallLevel = 0 Then BotDetectFirstTime()
+			$iDoPerformAfterSwitch = True
 		Else
 			If _Sleep($DELAYRUNBOT1) Then Return
 			checkMainScreen()
