@@ -39,10 +39,6 @@ Func waitMainScreen() ;Waits for main screen to popup
 		If _CheckPixel($aIsMain, $g_bNoCapturePixel) = True Or _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel) = True  Then ;Checks for Main Screen
 			If $g_iDebugSetlog = 1 Then Setlog("Screen cleared, WaitMainScreen exit", $COLOR_DEBUG)
 			Return
-		ElseIf _CheckPixel($aIsDPI125, $g_bNoCapturePixel) = True Then
-			ShowDPIHelp(125)
-		ElseIf _CheckPixel($aIsDPI150, $g_bNoCapturePixel) = True Then
-			ShowDPIHelp(150)
 		Else
 			If TestCapture() = False And _Sleep($DELAYWAITMAINSCREEN1) Then Return
 			If checkObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
