@@ -25,6 +25,9 @@ Func WaitForClouds()
 	Local $maxSearchCount = 720 ; $maxSearchCount * 250ms ($DELAYGETRESOURCES1) = seconds wait time before reset in lower leagues: 720*250ms = 3 minutes
 	Local $maxLongSearchCount = 7 ; $maxLongSearchCount * $maxSearchCount = seconds total wait time in higher leagues: ; 21 minutes, set a value here but is never used unless error
 
+	; samm0d
+	Local $iLostConnectionCount = 0
+
 	Switch Int($g_aiCurrentLoot[$eLootTrophy]) ; add randomization to SearchCounters (long cloud keep alive time) for higher leagues
 		Case 3700 To 4099 ; champion 1 league
 			$maxSearchCount = Random(480, 840, 1) ; random range 2-3.5 minutes
@@ -101,6 +104,45 @@ Func WaitForClouds()
 		EndIf
 
 		ForceCaptureRegion() ; ensure screenshots are not cached
+
+		;=================samm0d - check is that pop out google switch page
+		If _ColorCheck(_GetPixelColor(430, 333 + $g_iMidOffsetY , $g_bCapturePixel), Hex(0xFF8300, 6), 20) = True Then
+			$iLostConnectionCount += 1
+			If $iLostConnectionCount >= 80 Then ; Lost Connection over 20 seconds
+				$iSearchTime = TimerDiff($hMinuteTimer) / 60000 ;get time since minute timer start in minutes
+				SetLog("Connection Lost: Spent " & $iSearchTime & " minutes in Clouds searching, Restarting CoC and Bot...", $COLOR_ERROR)
+				$g_bIsClientSyncError = False ; disable fast OOS restart if not simple error and restarting CoC
+				$g_bRestart = True
+				CloseCoC(True)
+				Return
+			EndIf
+		Else
+			$iLostConnectionCount = 0
+		EndIf
+
+		If _ColorCheck(_GetPixelColor(160, 380, $g_bCapturePixel), Hex(0xFFFFFF, 6),5) And _ColorCheck(_GetPixelColor(699, 380, $g_bCapturePixel), Hex(0xFFFFFF, 6),5) Then
+			AndroidBackButton()
+			If _Sleep(1000) Then Return
+		EndIf
+		; launch attack button and chat button found, back to main?
+		If _ColorCheck(_GetPixelColor($aButtonOpenLaunchAttack[4], $aButtonOpenLaunchAttack[5],$g_bCapturePixel), Hex($aButtonOpenLaunchAttack[6], 6),$aButtonOpenLaunchAttack[7]) And _
+		_ColorCheck(_GetPixelColor($aButtonClanWindowOpen[4], $aButtonClanWindowOpen[5],$g_bCapturePixel), Hex($aButtonClanWindowOpen[6], 6),$aButtonClanWindowOpen[7]) Then
+			If $bEnabledGUI = True Then
+				SetLog("Disable bot controls after long wait time", $COLOR_SUCCESS)
+				AndroidShieldForceDown(False)
+				DisableGuiControls()
+				SaveConfig()
+				readConfig()
+				applyConfig()
+			EndIf
+			;$g_bIsClientSyncError = True
+			;$Restart = True
+			SetLog("Something happened that cause back to main screen when searching village for attack.",$COLOR_ERROR)
+			$g_bIsClientSyncError = False ; disable fast OOS restart if not simple error and restarting CoC
+			$g_bRestart = True
+			Return
+		EndIf
+		;========================
 	WEnd
 
 	If $bEnabledGUI = True Then

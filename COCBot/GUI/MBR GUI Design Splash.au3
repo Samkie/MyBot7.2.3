@@ -17,7 +17,8 @@
 
 ; Splash Variables
 Global $g_hSplash = 0, $g_hSplashProgress, $g_lSplashStatus, $g_lSplashPic, $g_lSplashTitle
-Global Const $g_iSplashTotalSteps = 10
+; samm0d
+Global Const $g_iSplashTotalSteps = 17
 Global $g_iSplashCurrentStep = 0
 Global $g_hSplashTimer = 0
 Global $g_hSplashMutex = 0

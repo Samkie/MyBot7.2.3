@@ -72,7 +72,10 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		Case 4 ;DE Side - Live Base only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			SetLog("Attacking on Dark Elixir Side.", $COLOR_INFO)
 			$nbSides = 1
-			If Not ($g_abAttackStdSmartAttack[$g_iMatchMode]) Then GetBuildingEdge($eSideBuildingDES) ; Get DE Storage side when Redline is not used.
+			If $g_iMatchMode = $LB Then
+				SetLog("Attacking on Dark Elixir Side.", $COLOR_INFO)
+				If Not ($g_abAttackStdSmartAttack[$g_iMatchMode]) Then GetBuildingEdge($eSideBuildingDES) ; Get DE Storage side when Redline is not used.
+			EndIf
 		Case 5 ;TH Side - Live Base only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			SetLog("Attacking on Town Hall Side.", $COLOR_INFO)
 			$nbSides = 1
@@ -206,7 +209,39 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	$g_aiDeployHeroesPosition[0] = -1
 	$g_aiDeployHeroesPosition[1] = -1
 
-	LaunchTroop2($listInfoDeploy, $g_iClanCastleSlot, $g_iKingSlot, $g_iQueenSlot, $g_iWardenSlot)
+	; samm0d
+	If $ichkDropCCFirst = 1 Then
+		Local $iPos = -1
+		For $i = 0 To UBound($listInfoDeploy) - 1
+			If IsString($listInfoDeploy[$i][0]) And $listInfoDeploy[$i][0] = "CC" Then
+				$iPos = $i
+				ExitLoop
+			EndIf
+		Next
+		If $iPos > 0 Then
+			For $i = $iPos To 1 Step -1
+				$listInfoDeploy[$i][0] = $listInfoDeploy[$i-1][0]
+				$listInfoDeploy[$i][1] = $listInfoDeploy[$i-1][1]
+				$listInfoDeploy[$i][2] = $listInfoDeploy[$i-1][2]
+				$listInfoDeploy[$i][3] = $listInfoDeploy[$i-1][3]
+				$listInfoDeploy[$i][4] = $listInfoDeploy[$i-1][4]
+			Next
+			$listInfoDeploy[0][0] = "CC"
+			$listInfoDeploy[0][1] = 1
+			$listInfoDeploy[0][2] = 1
+			$listInfoDeploy[0][3] = 1
+			$listInfoDeploy[0][4] = 1
+		EndIf
+	EndIf
+
+	; samm0d
+	If $g_aiAttackStdDropSides[$g_iMatchMode] = 4 And  $g_iMatchMode = $DB Then
+		SetLog(_PadStringCenter("Multi Finger Attack", 50, "="), $COLOR_BLUE)
+		launchMultiFinger($listInfoDeploy, $g_iClanCastleSlot, $g_iKingSlot, $g_iQueenSlot, $g_iWardenSlot)
+	Else
+		SetLog(_PadStringCenter("Standard Attack", 50, "="), $COLOR_BLUE)
+		LaunchTroop2($listInfoDeploy, $g_iClanCastleSlot, $g_iKingSlot, $g_iQueenSlot, $g_iWardenSlot)
+	EndIf
 
 	CheckHeroesHealth()
 
@@ -218,13 +253,13 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			ExitLoop ;Check remaining quantities
 		EndIf
 		For $i = $eBarb To $eBowl ; launch all remaining troops
-			;If $i = $eBarb Or $i = $eArch Then
-			LaunchTroop($i, $nbSides, 0, 1)
-			If $g_iActivateKQCondition = "Auto" Then CheckHeroesHealth()
-			;Else
-			;	 LaunchTroop($i, $nbSides, 0, 1, 2)
-			;EndIf
-			If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
+
+			; samm0d - disable 500ms delay if don't have that kind of troop
+			If LaunchTroop($i, $nbSides, 0, 1) = True Then
+				If $g_iActivateKQCondition = "Auto" Then CheckHeroesHealth()
+				If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
+			EndIf
+
 		Next
 	Next
 

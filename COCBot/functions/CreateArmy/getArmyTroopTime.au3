@@ -37,6 +37,20 @@ Func getArmyTroopTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSet
 	Local $sResultTroops = getRemainTrainTimer(756, 169) ;Get time via OCR.
 	$g_aiTimeTrain[0] = ConvertOCRTime("Troops", $sResultTroops, $bSetLog) ; update global array
 
+
+		; samm0d
+		If $g_bTrainAddRandomDelayEnable = True Then
+			If ($g_aiTimeTrain[0] * 60) < $g_iTrainAddRandomDelayMax Then
+				If $g_aiTimeTrain[0] > 0 Then
+					$bTempDisAddIdleTime = True
+				Else
+					$bTempDisAddIdleTime = False
+				EndIf
+			Else
+				$bTempDisAddIdleTime = False
+			EndIf
+		EndIf
+
 	If $bCloseArmyWindow Then
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return

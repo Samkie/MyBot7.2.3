@@ -78,7 +78,9 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = "
 			$right = $x0 + $iAdditional
 			$bottom = $y0 + $iAdditional
 			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
-			;SetDebugLog("GetVillageSize check for image " & $findImage)
+
+			SetDebugLog("GetVillageSize check for image " & $findImage & " Area: " & $sArea)
+
 			$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage,  $sArea, 1, False))
 			If UBound($a) = 2 Then
 				$x = Int($a[0])
@@ -170,6 +172,7 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = "
 	$aResult[7] = $tree[0]
 	$aResult[8] = $tree[1]
 	$aResult[9] = $tree[5]
+
 	Return $aResult
 EndFunc   ;==>GetVillageSize
 

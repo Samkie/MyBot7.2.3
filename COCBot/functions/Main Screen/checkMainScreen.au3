@@ -17,7 +17,7 @@
 Func checkMainScreen($bSetLog = True, $bBuilderBase = False) ;Checks if in main screen
 
 	Local $iCount, $bObstacleResult
-	Local $aPixelToCheck = $aIsMain
+	;Local $aPixelToCheck = $aIsMain
 
 	If $bSetLog Then
 		SetLog("Trying to locate Main Screen")
@@ -35,9 +35,9 @@ Func checkMainScreen($bSetLog = True, $bBuilderBase = False) ;Checks if in main 
 	EndIf
 	$iCount = 0
 
-	If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderIsland
+	;If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderIsland
 
-	While _CaptureRegions() And (Not _CheckPixel($aPixelToCheck, $g_bNoCapturePixel) Or checkObstacles_Network(False, False))
+	While _CaptureRegions() And ((Not _CheckPixel($aIsMain, False) And Not _CheckPixel($aIsOnBuilderIsland, False)) Or checkObstacles_Network(False, False))
 		If TestCapture() Then
 			SetLog("Main Screen not Located", $COLOR_ERROR)
 			ExitLoop
@@ -55,6 +55,7 @@ Func checkMainScreen($bSetLog = True, $bBuilderBase = False) ;Checks if in main 
 		Else
 			$g_bRestart = True
 		EndIf
+
 		waitMainScreen() ; Due to differeneces in PC speed, let waitMainScreen test for CoC restart
 		If Not $g_bRunState Then Return
 		If @extended Then Return SetError(1, 1, -1)
@@ -66,6 +67,14 @@ Func checkMainScreen($bSetLog = True, $bBuilderBase = False) ;Checks if in main 
 		EndIf
 	WEnd
 	ZoomOut()
+	If Not $bBuilderBase Then
+		If isOnBuilderIsland(True) Then
+			SwitchBetweenBases()
+		EndIf
+	EndIf
+
+		If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
+
 	If Not $g_bRunState Then Return
 
 	If $bSetLog Then

@@ -257,6 +257,10 @@ Func CreateMainGUIControls()
    SplashStep(GetTranslatedFileIni("MBR GUI Design - Loading", "SplashStep_06", "Loading Bot tab..."))
    CreateBotTab()
 
+	; samm0d
+	SplashStep("Loading M0d tab...")
+	#include "SamM0d\GUI\MBR GUI Design Child SamM0d.au3"
+
    SplashStep(GetTranslatedFileIni("MBR GUI Design - Loading", "SplashStep_07", "Loading About Us tab..."))
    CreateAboutTab()
 
@@ -266,11 +270,15 @@ Func CreateMainGUIControls()
    ;~ GUI Main Tab Control
    ;~ ------------------------------------------------------
    GUISwitch($g_hFrmBotEx)
-   $g_hTabMain = GUICtrlCreateTab(5, 85 + $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH - 9, $_GUI_MAIN_HEIGHT - 225); , $TCS_MULTILINE)
+   $g_hTabMain = GUICtrlCreateTab(6, 85 + $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH - 9, $_GUI_MAIN_HEIGHT - 225); , $TCS_MULTILINE)
    $g_hTabLog = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_01", "Log"))
    $g_hTabVillage = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village"))
    $g_hTabAttack = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03", "Attack Plan"))
    $g_hTabBot = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_04", "Bot"))
+
+   	; samm0d
+	$g_hTabMod = GUICtrlCreateTabItem("M0d")
+
    $g_hTabAbout = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_05", "About Us"))
    GUICtrlCreateTabItem("")
    GUICtrlSetResizing(-1, $GUI_DOCKBORDERS)

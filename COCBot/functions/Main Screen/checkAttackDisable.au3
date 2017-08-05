@@ -120,6 +120,8 @@ Func checkAttackDisable($iSource, $Result = "")
 			EndIf
 			If $g_asShieldStatus[0] = "guard" Then
 				Setlog("Unable to Force PB, Guard shield present", $COLOR_INFO)
+				; samm0d
+				BreakPersonalShield()
 			Else
 				Setlog("Forcing Early Personal Break Now!!", $COLOR_SUCCESS)
 			EndIf
@@ -136,6 +138,22 @@ Func checkAttackDisable($iSource, $Result = "")
 	$g_bRestart = True ; Set flag to restart the process at the bot main code when it returns
 
 	Setlog("Time for break, exit now..", $COLOR_INFO)
+
+	;samm0d
+	If $ichkEnableMySwitch Then
+		If $iCurActiveAcc <> -1 Then
+			For $i = 0 To UBound($aSwitchList) - 1
+				If $aSwitchList[$i][4] = $iCurActiveAcc Then
+					; $aSwitchList[$i][5] mark as PB, never switch to this profile until $aSwitchList[$i][5] reset 0 by getNextSwitchList()
+					$aSwitchList[$i][5] = 1
+					$aSwitchList[$i][0] = _DateAdd('n', $g_iSinglePBForcedLogoffTime, _NowCalc())
+					$aSwitchList[$i][1] = TimerInit()
+					$g_bRestart = True
+					Return
+				EndIf
+			Next
+		EndIf
+	Else
 
 	If TestCapture() Then
 		SetLog("checkAttackDisable: PoliteCloseCoC")
@@ -165,6 +183,6 @@ Func checkAttackDisable($iSource, $Result = "")
 	For $i = 0 To UBound($g_asShieldStatus) - 1
 		$g_asShieldStatus[$i] = "" ; reset global shield info array
 	Next
-
+	EndIf
 EndFunc   ;==>checkAttackDisable
 

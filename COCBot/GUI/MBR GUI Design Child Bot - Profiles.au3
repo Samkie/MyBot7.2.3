@@ -23,7 +23,11 @@ Global $g_hCmbProfile = 0, $g_hTxtVillageName = 0, $g_hBtnAddProfile = 0, $g_hBt
 Func CreateBotProfiles()
 
     Local $x = 25, $y = 45
-	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "Group_01", "Switch Profiles"), $x - 20, $y - 20, $g_iSizeWGrpTab2, $g_iSizeHGrpTab2)
+	;GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "Group_01", "Switch Profiles"), $x - 20, $y - 20, $g_iSizeWGrpTab2, $g_iSizeHGrpTab2)
+
+	; samm0d
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "Group_01", "Switch Profiles"), $x - 20, $y - 20, 438, 60)
+
 		$x -= 5
 		$g_hCmbProfile = GUICtrlCreateCombo("", $x - 3, $y + 1, 130, 18, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "CmbProfile_Info_01", "Use this to switch to a different profile")& @CRLF & _
@@ -99,5 +103,21 @@ Func CreateBotProfiles()
 			_GUICtrlButton_SetImageList($g_hBtnRenameProfile, $bIconEdit, 4)
 			GUICtrlSetOnEvent(-1, "btnRenameConfirm")
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "BtnRenameProfile_Info_01", "Rename Profile"))
+
+		; samm0d
+		$btnMakeSwitchADBFolder = GUICtrlCreateButton(GetTranslatedFileIni("sam m0d", 36, "Get shared_prefs"), $x + 230, $y, 100, 24)
+			GUICtrlSetOnEvent(-1, "btnMakeSwitchADBFolder")
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("sam m0d",37, "Copy Village save files from Emulator to current profile. Make village name image from profile."))
+
+;~ 		$chkUseADBLoadVillage = GUICtrlCreateCheckbox(GetTranslatedFileIni("sam m0d", 38, "Use replace shared_prefs"), $x + 340, $y-7, 80, 40,$BS_MULTILINE)
+;~ 			GUICtrlSetOnEvent(-1, "chkEnableAcc")
+;~ 			_GUICtrlSetTip(-1, GetTranslatedFileIni("sam m0d",39, "Use replace shared_prefs method to load account."))
+
+
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+$y += 40
+$x = 10
+#include "..\SamM0d\GUI\GUI Design MySwitch Setting.au3"
+
 EndFunc

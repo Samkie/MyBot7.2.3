@@ -45,40 +45,61 @@ Func UpgradeHeroes()
 		Return
 	EndIf
 
-	SetLog("Upgrading Heroes", $COLOR_INFO)
+	SetLog("Check Heroes For Upgrading.", $COLOR_INFO)
 	;;;;;;;;;;;;;;;;;;;;;;;;##### Archer Queen #####;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	;##### Verify Builders available #####;
-	If getBuilderCount() = False Then Return ; update builder data, return if problem
-	If _Sleep($DELAYRESPOND) Then Return
-	If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
-		SetLog("Not Enough Builders for Queen", $COLOR_ERROR)
-		Return
+	; samm0d - if heroes already in upgrade, skip update...
+	If $g_bUpgradeQueenEnable Then
+		If BitAND($g_iHeroUpgradingBit, $eHeroQueen) <> $eHeroQueen Then
+			If getBuilderCount() = False Then Return ; update builder data, return if problem
+			If _Sleep($DELAYRESPOND) Then Return
+			If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
+				SetLog("Not Enough Builders for Queen", $COLOR_ERROR)
+				Return
+			EndIf
+			;#### upgrade queen ####;
+			 QueenUpgrade()
+		Else
+			SetLog("Archer Queen upgrade in Process.", $COLOR_INFO)
+		EndIf
+		If _Sleep($DELAYUPGRADEHERO1) Then Return
 	EndIf
-	;#### upgrade queen ####;
-	QueenUpgrade()
-	If _Sleep($DELAYUPGRADEHERO1) Then Return
 	;;;;;;;;;;;;;;;;;;;;;;;;##### Barbarian King #####;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	;##### Verify Builders available #####;
-	If getBuilderCount() = False Then Return ; update builder data, return if problem
-	If _Sleep($DELAYRESPOND) Then Return
-	If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
-		SetLog("Not Enough Builders for King", $COLOR_ERROR)
-		Return
+	; samm0d - if heroes already in upgrade, skip update...
+	If $g_bUpgradeKingEnable Then
+		If BitAND($g_iHeroUpgradingBit, $eHeroKing) <> $eHeroKing Then
+			If getBuilderCount() = False Then Return ; update builder data, return if problem
+			If _Sleep($DELAYRESPOND) Then Return
+			If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
+				SetLog("Not Enough Builders for King", $COLOR_ERROR)
+				Return
+			EndIf
+			;##### Upgrade King #####;
+			KingUpgrade()
+		Else
+			SetLog("Barbarian King upgrade in Process.", $COLOR_INFO)
+		EndIf
+		If _Sleep($DELAYUPGRADEHERO1) Then Return
 	EndIf
-	;##### Upgrade King #####;
-	KingUpgrade()
-	If _Sleep($DELAYUPGRADEHERO1) Then Return
+
 	;;;;;;;;;;;;;;;;;;;;;;;;##### Grand Warden #####;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	;##### Verify Builders available
-	If getBuilderCount() = False Then Return ; update builder data, return if problem
-	If _Sleep($DELAYRESPOND) Then Return
-	If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
-		SetLog("Not Enough Builder for Warden", $COLOR_ERROR)
-		Return
+	; samm0d - if heroes already in upgrade, skip update...
+	If $g_bUpgradeWardenEnable Then
+		If BitAND($g_iHeroUpgradingBit, $eHeroWarden) <> $eHeroWarden Then
+			If getBuilderCount() = False Then Return ; update builder data, return if problem
+			If _Sleep($DELAYRESPOND) Then Return
+			If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
+				SetLog("Not Enough Builder for Warden", $COLOR_ERROR)
+				Return
+			EndIf
+			;##### Upg Warden
+			WardenUpgrade()
+		Else
+			SetLog("Grand Warden upgrade in Process.", $COLOR_INFO)
+		EndIf
 	EndIf
-	;##### Upg Warden
-	WardenUpgrade()
-
 EndFunc   ;==>UpgradeHeroes
 
 Func QueenUpgrade()
@@ -153,7 +174,9 @@ Func QueenUpgrade()
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0305") ; Click Upgrade Button
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
 		If $g_iDebugImageSave = 1 Then DebugImageSave("UpgradeDarkBtn1")
-		If _ColorCheck(_GetPixelColor(721, 118 + $g_iMidOffsetY, True), Hex(0xE00408, 6), 20) Then ; Check if the Hero Upgrade window is open
+		; samm0d
+		If _ColorCheck(_GetPixelColor(740, 560, True), Hex(0XE8E8E0, 6), 20) Then ; Check if the Hero Upgrade window is open
+		;If _ColorCheck(_GetPixelColor(721, 118 + $g_iMidOffsetY, True), Hex(0xE00408, 6), 20) Then ; Check if the Hero Upgrade window is open
 			If _ColorCheck(_GetPixelColor(691, 523 + $g_iMidOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(691, 527 + $g_iMidOffsetY), Hex(0xE70A12, 6), 20) And _
 					_ColorCheck(_GetPixelColor(691, 531 + $g_iMidOffsetY, True), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
 				SetLog("Queen Upgrade Fail! No DE!", $COLOR_ERROR)

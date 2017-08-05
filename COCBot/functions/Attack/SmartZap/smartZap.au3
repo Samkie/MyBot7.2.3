@@ -592,6 +592,8 @@ Func zapBuilding(ByRef $Spells, $x, $y)
 EndFunc   ;==>zapBuilding
 
 Func ReCheckDrillExist($x, $y)
+	; samm0d
+	ForceCaptureRegion()
 	_CaptureRegion2($x - 25, $y - 25, $x + 25, $y + 25)
 	Local $directory = @ScriptDir & "\imgxml\Storages\Drills"
 	Local $Maxpositions = 1

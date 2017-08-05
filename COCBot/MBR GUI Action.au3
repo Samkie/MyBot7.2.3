@@ -59,15 +59,16 @@ Func BotStart($bAutostartDelay = 0)
 		SetLog("Background Mode not supported for " & $g_sAndroidEmulator & " and has been disabled", $COLOR_ERROR)
 	EndIf
 
+	EnableControls($g_hFrmBotBottom, Default, $g_aFrmBotBottomCtrlState)
+	DisableGuiControls()
+
 	GUICtrlSetState($g_hBtnStart, $GUI_HIDE)
 	GUICtrlSetState($g_hBtnStop, $GUI_SHOW)
 	GUICtrlSetState($g_hBtnPause, $GUI_SHOW)
 	GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
 	GUICtrlSetState($g_hBtnSearchMode, $GUI_HIDE)
 	GUICtrlSetState($g_hChkBackgroundMode, $GUI_DISABLE)
-	EnableControls($g_hFrmBotBottom, Default, $g_aFrmBotBottomCtrlState)
 
-	DisableGuiControls()
 
 	SetRedrawBotWindow(True, Default, Default, Default, "BotStart")
 

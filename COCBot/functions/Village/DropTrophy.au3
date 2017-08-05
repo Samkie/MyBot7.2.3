@@ -90,6 +90,7 @@ Func DropTrophy()
 				SetLog("Dropping Trophies to " & $g_iDropTrophyMin, $COLOR_INFO)
 				If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 				$bDropSuccessful = True
+
 				ZoomOut()
 				PrepareSearch()
 				If $g_bOutOfGold = True Then Return ; Check flag for enough gold to search
@@ -264,7 +265,11 @@ Func DropTrophy()
 							$bDropSuccessful = False
 							ExitLoop
 					EndSelect
-					If $bDropSuccessful Then SetTrophyLoss()
+					; samm0d
+					If $bDropSuccessful Then
+						SetTrophyLoss()
+						$tempDisableTrain = False
+					EndIf
 					If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 					ReturnHome(False, False) ;Return home no screenshot
 					If _Sleep($DELAYDROPTROPHY1) Then ExitLoop

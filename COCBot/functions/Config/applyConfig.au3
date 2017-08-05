@@ -34,6 +34,11 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 
 	; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
+	;===========SamM0d Config=======================
+	#include "..\..\SamM0d\applyConfig.au3"
+	SetComboTroopComp()
+	;==============End SamM0D Config================
+
 	; <><><><> Bot / Profile (global settings) <><><><>
 	ApplyConfig_Profile($TypeReadSave)
 	; <><><><> Bot / Android <><><><>
@@ -128,6 +133,14 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 
 
 	ApplyConfig_Debug($TypeReadSave)
+
+
+	; samm0d
+	; Multi Finger (LunaEclipse)
+	_GUICtrlComboBox_SetCurSel($cmbDBMultiFinger,$iMultiFingerStyle)
+	cmbDBMultiFinger()
+	cmbDeployDB()
+	cmbDeployAB()
 
 	; Reenabling window redraw - Keep this last....
 	If $bRedrawAtExit Then SetRedrawBotWindow($bWasRdraw, Default, Default, Default, "applyConfig")

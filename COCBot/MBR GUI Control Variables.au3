@@ -204,11 +204,28 @@ Func InitializeControlVariables()
 				  $g_ahPicLeague[$eLeagueCrystal]&"#"&$g_ahPicLeague[$eLeagueMaster]&"#"&$g_ahPicLeague[$eLeagueChampion]&"#"&$g_ahPicLeague[$eLeagueTitan]&"#"& _
 				  $g_ahPicLeague[$eLeagueLegend]
 
+	; samm0d
+
+	;Spell
+	Global $groupMyLightning =$lblLightningIcon&"#"&$lblLightningSpell&"#"&$txtNumLightningSpell&"#"&$lblTimesLightS&"#"&$chkPreLightning
+	Global $groupMyHeal =$lblHealIcon&"#"&$lblHealSpell&"#"&$txtNumHealSpell&"#"&$lblTimesHealS&"#"&$chkPreHeal
+	Global $groupMyRage =$lblRageIcon&"#"&$lblRageSpell&"#"&$txtNumRageSpell&"#"&$lblTimesRageS&"#"&$chkPreRage
+	Global $groupMyJumpSpell =$lblJumpSpellIcon&"#"&$lblJumpSpell&"#"&$txtNumJumpSpell&"#"&$lblTimesJumpS&"#"&$chkPreJump
+	Global $groupMyFreeze =$lblFreezeIcon&"#"&$lblFreezeSpell&"#"&$txtNumFreezeSpell&"#"&$lblFreezeS&"#"&$chkPreFreeze
+	Global $groupMyClone = $lblCloneIcon&"#"&$lblCloneSpell&"#"&$txtNumCloneSpell&"#"&$lblCloneS&"#"&$chkPreClone
+	;Dark Spell
+	Global $groupMyPoison =$lblPoisonIcon&"#"&$lblPoisonSpell&"#"&$txtNumPoisonSpell&"#"&$lblTimesPoisonS&"#"&$chkPrePoison
+	Global $groupMyEarthquake =$lblEarthquakeIcon&"#"&$lblEarthquakeSpell&"#"&$txtNumEarthSpell&"#"&$lblTimesEarthquakeS&"#"&$chkPreEarth
+	Global $groupMyHaste =$lblHasteIcon&"#"&$lblHasteSpell&"#"&$txtNumHasteSpell&"#"&$lblTimesHasteS&"#"&$chkPreHaste
+	Global $groupMySkeleton =$lblSkeletonIcon&"#"&$lblSkeletonSpell&"#"&$txtNumSkeletonSpell&"#"&$lblTimesSkeletonS&"#"&$chkPreSkeleton
+	Global $groupListMySpells=$groupMyLightning&"#"&$groupMyHeal&"#"&$groupMyRage&"#"&$groupMyJumpSpell&"#"&$groupMyFreeze&"#"&$groupMyClone&"#"&$groupMyPoison&"#"&$groupMyEarthquake&"#"&$groupMyHaste&"#"&$groupMySkeleton
+
    ; Groups of controls
    Dim $aTabControlsVillage = [$g_hGUI_VILLAGE_TAB, $g_hGUI_VILLAGE_TAB_ITEM1, $g_hGUI_VILLAGE_TAB_ITEM2, $g_hGUI_VILLAGE_TAB_ITEM3, $g_hGUI_VILLAGE_TAB_ITEM4, $g_hGUI_VILLAGE_TAB_ITEM5]
    Dim $aTabControlsDonate = [$g_hGUI_DONATE_TAB, $g_hGUI_DONATE_TAB_ITEM1, $g_hGUI_DONATE_TAB_ITEM2, $g_hGUI_DONATE_TAB_ITEM3]
    Dim $aTabControlsUpgrade = [$g_hGUI_UPGRADE_TAB, $g_hGUI_UPGRADE_TAB_ITEM1, $g_hGUI_UPGRADE_TAB_ITEM2, $g_hGUI_UPGRADE_TAB_ITEM3, $g_hGUI_UPGRADE_TAB_ITEM4]
    Dim $aTabControlsNotify = [$g_hGUI_NOTIFY_TAB, $g_hGUI_NOTIFY_TAB_ITEM2, $g_hGUI_NOTIFY_TAB_ITEM6]
+
    Dim $aTabControlsAttack = [$g_hGUI_ATTACK_TAB, $g_hGUI_ATTACK_TAB_ITEM1, $g_hGUI_ATTACK_TAB_ITEM2, $g_hGUI_ATTACK_TAB_ITEM3]
 
    Dim $aTabControlsMisc = [$g_hGUI_MISC_TAB, $g_hGUI_MISC_TAB_ITEM1, $g_hGUI_MISC_TAB_ITEM2]
@@ -272,6 +289,38 @@ Func InitializeControlVariables()
 	$oAlwaysEnabledControls($g_hTabAttack) = 1
 	$oAlwaysEnabledControls($g_hTabBot) = 1
 	$oAlwaysEnabledControls($g_hTabAbout) = 1
+
+	; samm0d
+	$oAlwaysEnabledControls($g_hChkSamM0dDebugOCR) = 1
+	$oAlwaysEnabledControls($g_hChkSamM0dDebug) = 1
+	$oAlwaysEnabledControls($g_hchkSamM0dImage) = 1
+
+	$oAlwaysEnabledControls($grpMySwitch) = 1
+	$oAlwaysEnabledControls($chkProfileImage) = 1
+
+	$oAlwaysEnabledControls($btnMakeSwitchADBFolder) = 1
+	$oAlwaysEnabledControls($chkUseADBLoadVillage) = 1
+
+	$oAlwaysEnabledControls($chkEnableContinueStay) = 1
+	$oAlwaysEnabledControls($txtTrainTimeLeft) = 1
+
+	$oAlwaysEnabledControls($chkCanCloseGame) = 1
+	$oAlwaysEnabledControls($txtCanCloseGameTime) = 1
+
+	$oAlwaysEnabledControls($chkForcePreTrainB4Switch) = 1
+;~ 	For $i in $chkEnableAcc
+;~ 		$oAlwaysEnabledControls($i) = 1
+;~ 	Next
+;~ 	For $i in $cmbWithProfile
+;~ 		$oAlwaysEnabledControls($i) = 1
+;~ 	Next
+;~ 	For $i in $cmbAtkDon
+;~ 		$oAlwaysEnabledControls($i) = 1
+;~ 	Next
+;~ 	For $i in $cmbStayTime
+;~ 		$oAlwaysEnabledControls($i) = 1
+;~ 	Next
+
 
 	For $i in $aTabControlsVillage
 		$oAlwaysEnabledControls($i) = 1

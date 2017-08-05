@@ -47,6 +47,10 @@ Func SetComboTroopComp()
 	Local $TotalTroopsToTrain = 0
 
 	lblTotalCountTroop1()
+
+	; samm0d
+	UpdateTroopSize()
+
 	SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "SetComboTroopComp")
 EndFunc   ;==>SetComboTroopComp
 

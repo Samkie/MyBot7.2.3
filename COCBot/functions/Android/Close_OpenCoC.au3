@@ -66,12 +66,15 @@ Func OpenCoC()
 	If _Sleep(500) Then Return
 	If Not StartAndroidCoC() Then Return
 	If Not $g_bRunState Then Return
-	While _CheckPixel($aIsMain, True) = False ; Wait for MainScreen
-		$iCount += 1
-		If _Sleep(100) Then Return
-		If checkObstacles() Then $iCount += 1
-		If $iCount > 250 Then ExitLoop
-	WEnd
+
+	; samm0d
+	Wait4Main()
+;~ 	While _CheckPixel($aIsMain, True) = False ; Wait for MainScreen
+;~ 		$iCount += 1
+;~ 		If _Sleep(100) Then Return
+;~ 		If checkObstacles() Then $iCount += 1
+;~ 		If $iCount > 250 Then ExitLoop
+;~ 	WEnd
 
 EndFunc   ;==>OpenCoC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

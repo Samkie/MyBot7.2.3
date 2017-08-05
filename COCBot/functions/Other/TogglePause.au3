@@ -38,8 +38,11 @@ Func TogglePauseUpdateState($Source)
 
     If $g_bBotPaused Then
 		AndroidShield("TogglePauseImpl paused", False)
-		TrayTip($g_sBotTitle, "", 1)
-		TrayTip($g_sBotTitle, "was Paused!", 1, $TIP_ICONEXCLAMATION)
+		; samm0d
+		If $ichkDisablePauseTrayTip <> 1 Then
+			TrayTip($g_sBotTitle, "", 1)
+			TrayTip($g_sBotTitle, "was Paused!", 1, $TIP_ICONEXCLAMATION)
+		EndIf
 		Setlog("Bot was Paused!", $COLOR_ERROR)
 		If Not $g_bSearchMode Then
 			$g_iTimePassed += Int(__TimerDiff($g_hTimerSinceStarted))
@@ -51,8 +54,11 @@ Func TogglePauseUpdateState($Source)
 		;GUICtrlSetState($btnMakeScreenshot, $GUI_ENABLE)
 	Else
 		AndroidShield("TogglePauseImpl resumed")
-		TrayTip($g_sBotTitle, "", 1)
-		TrayTip($g_sBotTitle, "was Resumed.", 1, $TIP_ICONASTERISK)
+		; samm0d
+		If $ichkDisablePauseTrayTip <> 1 Then
+			TrayTip($g_sBotTitle, "", 1)
+			TrayTip($g_sBotTitle, "was Resumed.", 1, $TIP_ICONASTERISK)
+		EndIf
 		Setlog("Bot was Resumed.", $COLOR_SUCCESS)
 		If Not $g_bSearchMode Then
 			$g_hTimerSinceStarted = __TimerInit()
