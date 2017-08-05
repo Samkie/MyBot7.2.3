@@ -67,11 +67,11 @@ Func checkMainScreen($bSetLog = True, $bBuilderBase = False) ;Checks if in main 
 		EndIf
 	WEnd
 	ZoomOut()
-;~ 	If Not $bBuilderBase Then
-;~ 		If isOnBuilderIsland(True) Then
-;~ 			SwitchBetweenBases()
-;~ 		EndIf
-;~ 	EndIf
+	If Not $bBuilderBase Then
+		If isOnBuilderIsland(False) Then
+			SwitchBetweenBases()
+		EndIf
+	EndIf
 
 		If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
 
