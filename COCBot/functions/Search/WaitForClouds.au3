@@ -111,7 +111,7 @@ Func WaitForClouds()
 			If $iLostConnectionCount >= 80 Then ; Lost Connection over 20 seconds
 				$iSearchTime = TimerDiff($hMinuteTimer) / 60000 ;get time since minute timer start in minutes
 				SetLog("Connection Lost: Spent " & $iSearchTime & " minutes in Clouds searching, Restarting CoC and Bot...", $COLOR_ERROR)
-				$g_bIsClientSyncError = False ; disable fast OOS restart if not simple error and restarting CoC
+				$g_bIsClientSyncError = True
 				$g_bRestart = True
 				CloseCoC(True)
 				Return
@@ -135,10 +135,8 @@ Func WaitForClouds()
 				readConfig()
 				applyConfig()
 			EndIf
-			;$g_bIsClientSyncError = True
-			;$Restart = True
 			SetLog("Something happened that cause back to main screen when searching village for attack.",$COLOR_ERROR)
-			$g_bIsClientSyncError = False ; disable fast OOS restart if not simple error and restarting CoC
+			$g_bIsClientSyncError = True
 			$g_bRestart = True
 			Return
 		EndIf
