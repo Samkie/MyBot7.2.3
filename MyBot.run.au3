@@ -188,6 +188,7 @@ Func InitializeBot()
 		DirCreate(@ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\SamM0d Debug")
 		DirCreate(@ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\SamM0d Debug\Images")
 	EndIf
+
 	If $g_iMyTroopsSize = 0 Then
 		SetLog($CustomTrain_MSG_15, $COLOR_ERROR)
 	EndIf

@@ -1108,7 +1108,11 @@ Func btnMakeSwitchADBFolder()
 				Local $bFileFlag = 0
 				Local $bshared_prefs_file = False
 				Local $bVillagePng = False
-				If FileExists($sMyProfilePath4shared_prefs & "\HSJsonData.xml") Then $bFileFlag = BitOR($bFileFlag, 1)
+				If FileExists($sMyProfilePath4shared_prefs & "\com.facebook.internal.preferences.APP_SETTINGS.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\com.facebook.internal.preferences.APP_SETTINGS.xml")
+				If FileExists($sMyProfilePath4shared_prefs & "\com.google.android.gcm.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\com.google.android.gcm.xml")
+
+				If FileExists($sMyProfilePath4shared_prefs & "\HSJsonData.xml") And FileExists($sMyProfilePath4shared_prefs & "\mat_queue.xml") And FileExists($sMyProfilePath4shared_prefs & "\openudid_prefs.xml") _
+				And FileExists($sMyProfilePath4shared_prefs & "\storage.xml") And FileExists($sMyProfilePath4shared_prefs & "\storage_new.xml") Then $bFileFlag = BitOR($bFileFlag, 1)
 				If FileExists(@ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\village_92.png") Then $bFileFlag = BitOR($bFileFlag, 2)
 
 				;If FileExists($sMyProfilePath4shared_prefs & "\localPrefs.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\localPrefs.xml")
@@ -1149,8 +1153,10 @@ Func btnPushshared_prefs()
 	If StringInStr($g_sEmulatorInfo4MySwitch,"bluestacks") Then
 		$lResult = DirCopy($sMyProfilePath4shared_prefs, $hostPath, 1)
 		If $lResult = 1 Then
-			$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; " & _
+			;$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; rd /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; " & _
+			$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; cd /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; rm -r ./*; " & _
 			"cp -r " & $androidPath & "* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; exit; exit'" & Chr(34), "", @SW_HIDE)
+			;"cp -r " & $androidPath & "* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; exit; exit'" & Chr(34), "", @SW_HIDE)
 			DirRemove($hostPath, 1)
 		EndIf
 	Else
@@ -1176,6 +1182,9 @@ Func loadVillageFrom($Profilename)
 	Local $androidPath = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/") & "shared_prefs/"
 
 	;If FileExists($sMyProfilePath4shared_prefs & "\localPrefs.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\localPrefs.xml")
+
+	If FileExists($sMyProfilePath4shared_prefs & "\com.facebook.internal.preferences.APP_SETTINGS.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\com.facebook.internal.preferences.APP_SETTINGS.xml")
+	If FileExists($sMyProfilePath4shared_prefs & "\com.google.android.gcm.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\com.google.android.gcm.xml")
 
 	If StringInStr($g_sEmulatorInfo4MySwitch,"bluestacks") Then
 		$lResult = DirCopy($sMyProfilePath4shared_prefs, $hostPath, 1)

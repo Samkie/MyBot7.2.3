@@ -43,6 +43,7 @@ Func cmbProfile()
 		DirCreate(@ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\SamM0d Debug")
 		DirCreate(@ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\SamM0d Debug\Images")
 	EndIf
+
 	SetLog("Profile " & $g_sProfileCurrentName & " loaded from " & $g_sProfileConfigPath, $COLOR_SUCCESS)
 	If $g_iMyTroopsSize = 0 Then
 		SetLog($CustomTrain_MSG_15, $COLOR_ERROR)
