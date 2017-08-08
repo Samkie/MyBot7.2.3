@@ -475,7 +475,7 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 				Else
 					$g_iFailedToZoomOutCount += 1
 					PoliteCloseCoC("Zoomout" & $sSource)
-					If _Sleep(1000) Then Return $aResult
+					;If _Sleep(1000) Then Return $aResult
 					CloseCoC() ; ensure CoC is gone
 					OpenCoC()
 				EndIf

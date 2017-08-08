@@ -25,9 +25,7 @@ Func getBuilderCount($bSuppressLog = False, $bBuilderBase = False)
 		$bIsMainPage = IsMainPageBuilderBase()
 
 	EndIf
-
 	If $bIsMainPage Then ; check for proper window location
-
 		If Not $bBuilderBase Then
 			$sBuilderInfo = getBuilders($aBuildersDigits[0], $aBuildersDigits[1]) ; get builder string with OCR
 		Else

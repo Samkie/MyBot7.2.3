@@ -499,7 +499,7 @@ Func DoSwitchAcc()
 		Switch $icmbSwitchMethod
 			Case 2
 				PoliteCloseCoC()
-				If _Sleep(1500) Then Return False
+				;If _Sleep(1500) Then Return False
 				$iCurActiveAcc = $iNextAcc
 				DoVillageLoadSucess($iCurActiveAcc)
 
@@ -1070,6 +1070,7 @@ EndFunc
 Func btnMakeSwitchADBFolder()
 	Local $currentRunState = $g_bRunState
 	Local $bFileFlag = 0
+	Local $iCount = 0
 	Local $bshared_prefs_file = False
 	Local $bVillagePng = False
 	Local $sMyProfilePath4shared_prefs = @ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\shared_prefs"
@@ -1109,7 +1110,7 @@ Func btnMakeSwitchADBFolder()
 			Click(30, 40, 1, 0, "#0222") ; Click Info Profile Button
 			; Waiting for profile page fully load.
 			ForceCaptureRegion()
-			Local $iCount = 0
+			$iCount = 0
 			While 1
 				_CaptureRegion()
 				If _ColorCheck(_GetPixelColor(250, 95, $g_bNoCapturePixel), Hex(0XE8E8E0,6), 10) = True And _ColorCheck(_GetPixelColor(360, 145, $g_bNoCapturePixel), Hex(0XE8E8E0,6), 10) = False Then
@@ -1145,7 +1146,6 @@ Func btnMakeSwitchADBFolder()
 			ClickP($aAway,1,0)
 			If _Sleep(250) Then Return False
 			Click($aButtonSetting[0],$aButtonSetting[1],1,0,"#Setting")
-			Local $iCount
 			If Not _Wait4Pixel($aButtonClose2[4], $aButtonClose2[5], $aButtonClose2[6], $aButtonClose2[7], 1500, 100) Then
 				SetLog("Cannot load setting page, restart game...", $COLOR_RED)
 			EndIf
@@ -1166,8 +1166,7 @@ Func btnMakeSwitchADBFolder()
 		Local $lResult
 
 		PoliteCloseCoC()
-
-		If _Sleep(1500) Then Return False
+		;If _Sleep(1500) Then Return False
 
 		If $g_iSamM0dDebug = 1 Then SetLog("$g_sEmulatorInfo4MySwitch: " & $g_sEmulatorInfo4MySwitch)
 
@@ -1219,7 +1218,7 @@ Func btnPushshared_prefs()
 
 	SetLog("Start")
 	PoliteCloseCoC()
-	If _Sleep(1500) Then Return False
+	;If _Sleep(1500) Then Return False
 	Local $lResult
 	Local $sMyProfilePath4shared_prefs = @ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\shared_prefs"
 	Local $hostPath = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & "shared_prefs"
@@ -1257,7 +1256,7 @@ EndFunc
 
 Func loadVillageFrom($Profilename)
 	PoliteCloseCoC()
-	If _Sleep(1500) Then Return False
+	;If _Sleep(1500) Then Return False
 	Local $lResult
 	Local $sMyProfilePath4shared_prefs = @ScriptDir & "\profiles\" & $Profilename & "\shared_prefs"
 	Local $hostPath = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & "shared_prefs"

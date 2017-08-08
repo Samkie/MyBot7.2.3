@@ -225,6 +225,25 @@ Func PoliteCloseCoC($sSource = "Unknown_")
 			$i += 1
 		WEnd
 	EndIf
+
+	; samm0d - wait game fully close within 3 seconds
+	$g_iAndroidCoCPid = GetAndroidProcessPID(Default, False)
+	If $g_iSamM0dDebug = 1 Then SetLog("$g_iAndroidCoCPid: " & $g_iAndroidCoCPid)
+	Local $iCount = 0
+	While $g_iAndroidCoCPid <> 0
+		$g_iAndroidCoCPid = GetAndroidProcessPID(Default, False)
+		If $g_iSamM0dDebug = 1 Then SetLog("$g_iAndroidCoCPid: " & $g_iAndroidCoCPid)
+		$iCount += 1
+		If $iCount > 12 Then ExitLoop
+		If _Sleep(250) Then Return False
+	WEnd
+	If $iCount > 12 Then
+		ResumeAndroid()
+		If Not $g_bRunState Then Return
+		WinGetAndroidHandle()
+		If Not $g_bRunState Then Return
+		AndroidAdbSendShellCommand("am force-stop " & $g_sAndroidGamePackage, Default, Default, False)
+	EndIf
 	ResetAndroidProcess()
 	ReduceBotMemory()
 EndFunc   ;==>PoliteCloseCoC
