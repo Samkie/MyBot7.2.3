@@ -4,7 +4,7 @@
 ; Syntax ........:getNextSwitchList()
 ; Parameters ....:
 ; Return values .: None
-; Author ........: Samkie (11 July, 2017)
+; Author ........: Samkie (8 August, 2017)
 ; Modified ......:
 ; Remarks .......:
 ; Related .......:
@@ -191,7 +191,7 @@ Func buildSwitchList()
 	For $i = 0 To 7
 		If $ichkEnableAcc[$i] = 1 Then
 			If $icmbSwitchMethod = 1 Then
-				If Not FileExists(@ScriptDir & "\profiles\" & $icmbWithProfile[$i] & "\shared_prefs\HSJsonData.xml") Then
+				If Not FileExists(@ScriptDir & "\profiles\" & $icmbWithProfile[$i] & "\shared_prefs\storage.xml") Then
 					MsgBox($MB_SYSTEMMODAL, "Error!", "shared_prefs for " & $icmbWithProfile[$i] & " not found." & @CRLF _
 					& "Please Load profile " & $icmbWithProfile[$i] & " and goto emulator load village " & $icmbWithProfile[$i] & @CRLF _
 					& "Then use get shared_prefs button to get shared_prefs before use this feature.")
@@ -1068,6 +1068,63 @@ Func displayStats($iSlot)
 EndFunc
 
 Func btnMakeSwitchADBFolder()
+	Local $currentRunState = $g_bRunState
+	Local $bFileFlag = 0
+	Local $bshared_prefs_file = False
+	Local $bVillagePng = False
+	Local $sMyProfilePath4shared_prefs = @ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\shared_prefs"
+
+	$g_bRunState = True
+
+	_GUICtrlTab_ClickTab($g_hTabMain, 0)
+	SetLog(_PadStringCenter(" Start ", 50, "="),$COLOR_INFO)
+	If _Sleep(200) Then Return False
+	checkMainScreen(False, False)
+	If _Sleep(200) Then Return False
+
+	; remove old village before new copy
+	If FileExists(@ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\village_92.png") Then
+		SetLog("Removing previous village_92.png", $COLOR_INFO)
+		FileDelete(@ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\village_92.png")
+		If FileExists(@ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\village_92.png") Then
+			SetLog("Cannot remove previous village_92.png", $COLOR_INFO)
+		Else
+			SetLog("Previous village_92.png removed.", $COLOR_INFO)
+		EndIf
+	EndIf
+	If FileExists($sMyProfilePath4shared_prefs) Then
+		SetLog("Removing previous shared_prefs", $COLOR_INFO)
+		DirRemove($sMyProfilePath4shared_prefs, 1)
+		If FileExists($sMyProfilePath4shared_prefs) Then
+			SetLog("Cannot remove previous shared_prefs", $COLOR_INFO)
+		Else
+			SetLog("Previous shared_prefs removed.", $COLOR_INFO)
+		EndIf
+	EndIf
+
+	If Not _CheckColorPixel($aButtonClose3[4], $aButtonClose3[5], $aButtonClose3[6], $aButtonClose3[7]) Then
+		ClickP($aAway, 1, 0, "#0221") ;Click Away
+		If _Sleep($DELAYPROFILEREPORT1) Then Return
+		If _CheckColorPixel($aIsMain[0], $aIsMain[1], $aIsMain[2], $aIsMain[3]) Then
+			Click(30, 40, 1, 0, "#0222") ; Click Info Profile Button
+			; Waiting for profile page fully load.
+			ForceCaptureRegion()
+			Local $iCount = 0
+			While 1
+				_CaptureRegion()
+				If _ColorCheck(_GetPixelColor(250, 95, $g_bNoCapturePixel), Hex(0XE8E8E0,6), 10) = True And _ColorCheck(_GetPixelColor(360, 145, $g_bNoCapturePixel), Hex(0XE8E8E0,6), 10) = False Then
+					ExitLoop
+				EndIf
+				If _Sleep(250) Then Return False
+				$iCount += 1
+				If $iCount > 40 Then ExitLoop
+			WEnd
+		Else
+			SetLog("Unable to locate main screen.", $COLOR_ERROR)
+			Return
+		EndIf
+	EndIf
+
 	_CaptureRegion()
 	If _CheckColorPixel($aButtonClose3[4], $aButtonClose3[5], $aButtonClose3[6], $aButtonClose3[7], $g_bNoCapturePixel) Then
 		Local $iSecondBaseTabHeight
@@ -1079,61 +1136,81 @@ Func btnMakeSwitchADBFolder()
 
 		Local $hClone = _GDIPlus_BitmapCloneArea($g_hBitmap, 70,127 + $iSecondBaseTabHeight, 80,17, $GDIP_PXF24RGB)
 		_GDIPlus_ImageSaveToFile($hClone, @ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\village_92.png")
+		If FileExists(@ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\village_92.png") Then
+			SetLog("village_92.png captured.", $COLOR_INFO)
+			$bFileFlag = BitOR($bFileFlag, 2)
+		EndIf
+
+		If $g_sAndroidGameDistributor = $g_sGoogle Then
+			ClickP($aAway,1,0)
+			If _Sleep(250) Then Return False
+			Click($aButtonSetting[0],$aButtonSetting[1],1,0,"#Setting")
+			Local $iCount
+			If Not _Wait4Pixel($aButtonClose2[4], $aButtonClose2[5], $aButtonClose2[6], $aButtonClose2[7], 1500, 100) Then
+				SetLog("Cannot load setting page, restart game...", $COLOR_RED)
+			EndIf
+			If _CheckColorPixel($aButtonGoogleConnectGreen[4], $aButtonGoogleConnectGreen[5], $aButtonGoogleConnectGreen[6], $aButtonGoogleConnectGreen[7]) Then
+				Click($aButtonGoogleConnectGreen[0],$aButtonGoogleConnectGreen[1],1,0,"#ConnectGoogle")
+			EndIf
+			If Not _Wait4Pixel($aButtonGoogleConnectRed[4], $aButtonGoogleConnectRed[5], $aButtonGoogleConnectRed[6], $aButtonGoogleConnectRed[7], 1500, 100) Then
+				SetLog("Cannot disconnect to google.", $COLOR_RED)
+			Else
+				SetLog("Disconnected to google.", $COLOR_INFO)
+			EndIf
+			ClickP($aAway,1,0)
+			If Not _Wait4Pixel($aIsMain[0], $aIsMain[1], $aIsMain[2], $aIsMain[3], 1500, 100) Then
+				SetLog("Cannot back to main screen.", $COLOR_RED)
+			EndIf
+		EndIf
 
 		Local $lResult
-		Local $sMyProfilePath4shared_prefs = @ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\shared_prefs"
-		; remove old village before new copy
-		DirRemove($sMyProfilePath4shared_prefs, 1)
+
+		PoliteCloseCoC()
+
+		If _Sleep(1500) Then Return False
 
 		If $g_iSamM0dDebug = 1 Then SetLog("$g_sEmulatorInfo4MySwitch: " & $g_sEmulatorInfo4MySwitch)
 
-		If StringInStr($g_sEmulatorInfo4MySwitch,"bluestacks") Then
-			$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; mkdir /sdcard/tempshared; cp /data/data/" & $g_sAndroidGamePackage & _
-			"/shared_prefs/* /sdcard/tempshared; exit; exit'" & Chr(34), "", @SW_HIDE)
+		$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; mkdir /sdcard/tempshared; cp /data/data/" & $g_sAndroidGamePackage & _
+		"/shared_prefs/* /sdcard/tempshared; exit; exit'" & Chr(34), "", @SW_HIDE)
+		If $lResult = 0 Then
+			$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " pull /sdcard/tempshared " & Chr(34) & $sMyProfilePath4shared_prefs & Chr(34), "", @SW_HIDE)
 			If $lResult = 0 Then
-				$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " pull /sdcard/tempshared " & Chr(34) & $sMyProfilePath4shared_prefs & Chr(34), "", @SW_HIDE)
-				If $lResult = 0 Then
-					$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'rm -r /sdcard/tempshared; exit; exit'" & Chr(34), "", @SW_HIDE)
-				EndIf
+				$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'rm -r /sdcard/tempshared; exit; exit'" & Chr(34), "", @SW_HIDE)
 			EndIf
-		Else
-			If $g_iSamM0dDebug = 1 Then SetLog("Command: " & $g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " pull /data/data/" & $g_sAndroidGamePackage & "/shared_prefs " & Chr(34) & $sMyProfilePath4shared_prefs & Chr(34))
-			$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " pull /data/data/" & $g_sAndroidGamePackage & "/shared_prefs " & Chr(34) & $sMyProfilePath4shared_prefs & Chr(34), "", @SW_HIDE)
 		EndIf
 
 		If @error Then
-			MsgBox($MB_SYSTEMMODAL, "", "Failed to run adb command.")
+			SetLog("Failed to run adb command.", $COLOR_ERROR)
 		Else
 			If $lResult = 0 Then
-				Local $bFileFlag = 0
-				Local $bshared_prefs_file = False
-				Local $bVillagePng = False
-				If FileExists($sMyProfilePath4shared_prefs & "\com.facebook.internal.preferences.APP_SETTINGS.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\com.facebook.internal.preferences.APP_SETTINGS.xml")
-				If FileExists($sMyProfilePath4shared_prefs & "\com.google.android.gcm.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\com.google.android.gcm.xml")
-
-				If FileExists($sMyProfilePath4shared_prefs & "\HSJsonData.xml") And FileExists($sMyProfilePath4shared_prefs & "\mat_queue.xml") And FileExists($sMyProfilePath4shared_prefs & "\openudid_prefs.xml") _
-				And FileExists($sMyProfilePath4shared_prefs & "\storage.xml") And FileExists($sMyProfilePath4shared_prefs & "\storage_new.xml") Then $bFileFlag = BitOR($bFileFlag, 1)
-				If FileExists(@ScriptDir & "\profiles\" & $g_sProfileCurrentName & "\village_92.png") Then $bFileFlag = BitOR($bFileFlag, 2)
-
-				;If FileExists($sMyProfilePath4shared_prefs & "\localPrefs.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\localPrefs.xml")
-
-				Switch $bFileFlag
-					Case 3
-						MsgBox($MB_SYSTEMMODAL, "", GetTranslatedFileIni("sam m0d", "MySwitch_Capture_Msg1", "Sucess: shared_prefs copied and village_92.png captured."))
-					Case 2
-						MsgBox($MB_SYSTEMMODAL, "", GetTranslatedFileIni("sam m0d", "MySwitch_Capture_Msg2", "Failed to copy shared_prefs from emulator, but village_92.png captured."))
-					Case 1
-						MsgBox($MB_SYSTEMMODAL, "", GetTranslatedFileIni("sam m0d", "MySwitch_Capture_Msg3", "Failed to capture village_92.png from emulator, but shared_prefs copied."))
-					Case Else
-						MsgBox($MB_SYSTEMMODAL, "", GetTranslatedFileIni("sam m0d", "MySwitch_Capture_Msg4", "Failed to copy shared_prefs and capture village_92.png from emulator."))
-				EndSwitch
+				If FileExists($sMyProfilePath4shared_prefs & "\storage.xml") Then
+					SetLog("shared_prefs captured.", $COLOR_INFO)
+					$bFileFlag = BitOR($bFileFlag, 1)
+				EndIf
 			Else
-				MsgBox($MB_SYSTEMMODAL, "", "Failed to run operate adb command.")
+				SetLog("Failed to run operate adb command.", $COLOR_ERROR)
 			EndIf
 		EndIf
+
+		Switch $bFileFlag
+			Case 3
+				SetLog(GetTranslatedFileIni("sam m0d", "MySwitch_Capture_Msg1", "Sucess: shared_prefs copied and village_92.png captured."), $COLOR_INFO)
+			Case 2
+				SetLog(GetTranslatedFileIni("sam m0d", "MySwitch_Capture_Msg2", "Failed to copy shared_prefs from emulator, but village_92.png captured."), $COLOR_ERROR)
+			Case 1
+				SetLog(GetTranslatedFileIni("sam m0d", "MySwitch_Capture_Msg3", "Failed to capture village_92.png from emulator, but shared_prefs copied."), $COLOR_ERROR)
+			Case Else
+				SetLog(GetTranslatedFileIni("sam m0d", "MySwitch_Capture_Msg4", "Failed to copy shared_prefs and capture village_92.png from emulator."), $COLOR_ERROR)
+		EndSwitch
+		OpenCoC()
+		Wait4Main()
 	Else
-		MsgBox($MB_SYSTEMMODAL, "", GetTranslatedFileIni("sam m0d", "MySwitch_Capture_Shared_Prefs_Error", "Please open emulator and coc, then go to profile page before doing this action."))
+		SetLog(GetTranslatedFileIni("sam m0d", "MySwitch_Capture_Shared_Prefs_Error", "Please open emulator and coc, then go to profile page before doing this action."), $COLOR_ERROR)
 	EndIf
+
+	SetLog(_PadStringCenter(" End ", 50, "="),$COLOR_INFO)
+	$g_bRunState = $currentRunState
 EndFunc
 
 Func btnPushshared_prefs()
@@ -1148,26 +1225,31 @@ Func btnPushshared_prefs()
 	Local $hostPath = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & "shared_prefs"
 	Local $androidPath = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/") & "shared_prefs/"
 
-	;If FileExists($sMyProfilePath4shared_prefs & "\localPrefs.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\localPrefs.xml")
-
-	If StringInStr($g_sEmulatorInfo4MySwitch,"bluestacks") Then
+	If FileExists($sMyProfilePath4shared_prefs & "\storage.xml") Then
 		$lResult = DirCopy($sMyProfilePath4shared_prefs, $hostPath, 1)
 		If $lResult = 1 Then
-			;$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; rd /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; " & _
-			$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; cd /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; rm -r ./*; " & _
-			"cp -r " & $androidPath & "* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; exit; exit'" & Chr(34), "", @SW_HIDE)
-			;"cp -r " & $androidPath & "* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; exit; exit'" & Chr(34), "", @SW_HIDE)
+			$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; " & _
+			"cp -r " & $androidPath & "* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; cd /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; " & _
+			"find -name 'com.facebook.internal.preferences.APP_SETTINGS.xml' -type f -exec rm -f {} +; " & _
+			"find -name 'com.google.android.gcm.xml' -type f -exec rm -f {} +; " & _
+			"find -name 'com.mobileapptracking.xml' -type f -exec rm -f {} +; " & _
+			"find -name '*.bak' -type f -exec rm -f {} +; " & _
+			"exit; exit'" & Chr(34), "", @SW_HIDE)
+
+			;"find -name 'HSJsonData.xml' -type f -exec rm -f {} +; " & _
+			;"find -name 'mat_queue.xml' -type f -exec rm -f {} +; " & _
+			;"find -name 'openudid_prefs.xml' -type f -exec rm -f {} +; " & _
+			;"find -name 'localPrefs.xml' -type f -exec rm -f {} +; " & _
+
 			DirRemove($hostPath, 1)
 		EndIf
+		If $lResult = 0 Then
+			SetLog("shared_prefs copy to emulator should be okay.", $COLOR_INFO)
+			OpenCoC()
+			Wait4Main()
+		EndIf
 	Else
-		$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " push " & Chr(34) & $sMyProfilePath4shared_prefs & Chr(34) & " /data/data/" & $g_sAndroidGamePackage & "/shared_prefs", "", @SW_HIDE)
-	EndIf
-
-	If $lResult = 0 Then
-		SetLog("shared_prefs copy to emulator should be okay.", $COLOR_INFO)
-
-		OpenCoC()
-		Wait4Main()
+		SetLog($sMyProfilePath4shared_prefs & "\storage.xml not found.", $COLOR_ERROR)
 	EndIf
 	SetLog("Finish")
 	$g_bRunState = $currentRunState
@@ -1181,25 +1263,26 @@ Func loadVillageFrom($Profilename)
 	Local $hostPath = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & "shared_prefs"
 	Local $androidPath = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/") & "shared_prefs/"
 
-	;If FileExists($sMyProfilePath4shared_prefs & "\localPrefs.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\localPrefs.xml")
+	$lResult = DirCopy($sMyProfilePath4shared_prefs, $hostPath, 1)
+	If $lResult = 1 Then
+		$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; " & _
+		"cp -r " & $androidPath & "* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; cd /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; " & _
+		"find -name 'com.facebook.internal.preferences.APP_SETTINGS.xml' -type f -exec rm -f {} +; " & _
+		"find -name 'com.google.android.gcm.xml' -type f -exec rm -f {} +; " & _
+		"find -name 'com.mobileapptracking.xml' -type f -exec rm -f {} +; " & _
+		"find -name '*.bak' -type f -exec rm -f {} +; " & _
+		"exit; exit'" & Chr(34), "", @SW_HIDE)
 
-	If FileExists($sMyProfilePath4shared_prefs & "\com.facebook.internal.preferences.APP_SETTINGS.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\com.facebook.internal.preferences.APP_SETTINGS.xml")
-	If FileExists($sMyProfilePath4shared_prefs & "\com.google.android.gcm.xml") Then FileDelete($sMyProfilePath4shared_prefs & "\com.google.android.gcm.xml")
+		;"find -name 'HSJsonData.xml' -type f -exec rm -f {} +; " & _
+		;"find -name 'mat_queue.xml' -type f -exec rm -f {} +; " & _
+		;"find -name 'openudid_prefs.xml' -type f -exec rm -f {} +; " & _
+		;"find -name 'localPrefs.xml' -type f -exec rm -f {} +; " & _
 
-	If StringInStr($g_sEmulatorInfo4MySwitch,"bluestacks") Then
-		$lResult = DirCopy($sMyProfilePath4shared_prefs, $hostPath, 1)
-		If $lResult = 1 Then
-			$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell "& Chr(34) & "su -c 'chmod 777 /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; " & _
-			"cp -r " & $androidPath & "* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs; exit; exit'" & Chr(34), "", @SW_HIDE)
-			DirRemove($hostPath, 1)
-		EndIf
-	Else
-		$lResult = RunWait($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " push " & Chr(34) & $sMyProfilePath4shared_prefs & Chr(34) & " /data/data/" & $g_sAndroidGamePackage & "/shared_prefs", "", @SW_HIDE)
+		DirRemove($hostPath, 1)
 	EndIf
 
 	If $lResult = 0 Then
 		SetLog("shared_prefs copy to emulator should be okay.", $COLOR_INFO)
-
 		If $iMySwitchSmartWaitTime > 0 Then
 			SmartWait4TrainMini($iMySwitchSmartWaitTime, 1)
 			$iMySwitchSmartWaitTime = 0
@@ -1207,7 +1290,6 @@ Func loadVillageFrom($Profilename)
 			OpenCoC()
 			Wait4Main()
 		EndIf
-
 		Return True
 	EndIf
 
@@ -1298,9 +1380,9 @@ EndFunc
 
 Func Wait4Main($bBuilderBase = False)
 	Local $iCount
-	For $i = 0 To 60 ;35*2000 = 2 Minutes
+	For $i = 0 To 105
 		$iCount += 1
-		If $iCount > 90 Then ExitLoop ; If _checkObstacles() forces reset, limit total time to 3 minutes
+		If $iCount > 120 Then ExitLoop
 		If $g_iSamM0dDebug = 1 Then Setlog("Wait4Main Loop = " & $i & "   ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
 		ForceCaptureRegion()
 		_CaptureRegion()

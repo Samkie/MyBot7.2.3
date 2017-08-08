@@ -262,21 +262,21 @@ Func chkmakeIMGCSV()
 EndFunc   ;==>chkmakeIMGCSV
 
 Func btnTestTrain()
-	Local $currentOCR = $g_iDebugOcr
 	Local $currentRunState = $g_bRunState
 	$g_bRunState = True
+
+	_GUICtrlTab_ClickTab($g_hTabMain, 0)
 	SetLog("===START===")
 	Local $hTimer = __TimerInit()
 
-;~ FriendlyChallenge()
 	$g_bRestart = False
 	$tempDisableTrain=False
 	$tempDisableBrewSpell=False
     ModTrain()
 
-	SetLog("$hTimer: " & Round(__TimerDiff($hTimer) / 1000, 2))
+	SetLog("Elapsed: " & Round(__TimerDiff($hTimer) / 1000, 2))
 	SetLog("===END===")
-	$g_iDebugOcr = $currentOCR
+
 	$g_bRunState = $currentRunState
 EndFunc   ;==>btnTestTrain
 

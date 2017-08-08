@@ -121,8 +121,9 @@ Func ModTrain($ForcePreTrain = False)
 		;_ArraySort($iKTime,1)
 		Local $iMaxV =  _ArrayMax($iKTime, 1)
 
-		Local $bIsAttackType = False
+		If $g_iSamM0dDebug = 1 Then SetLog("$iMaxV: " & $iMaxV)
 
+		Local $bIsAttackType = False
 		If $iCurActiveAcc <> -1 Then
 			For $i = 0 To UBound($aSwitchList) - 1
 				If $aSwitchList[$i][4] = $iCurActiveAcc Then
