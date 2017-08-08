@@ -98,12 +98,12 @@ Func waitMainScreenMini()
 		If $g_iDebugSetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
 		$iCount += 1
 		_CaptureRegion()
-		If _CheckPixel($aIsMain, $g_bNoCapturePixel) = False Or _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel) = False Then ;Checks for Main Screen
-			If TestCapture() = False And _Sleep(1000) Then Return
-			If CheckObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
-		Else
+		If _CheckPixel($aIsMain, $g_bNoCapturePixel) Or _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel) Then ;Checks for Main Screen
 			SetLog("CoC main window took " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_SUCCESS)
 			Return
+		Else
+			If TestCapture() = False And _Sleep(1000) Then Return
+			If CheckObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
 		EndIf
 		_StatusUpdateTime($hTimer, "Main Screen")
 		If ($i > 60) Or ($iCount > 80) Then ExitLoop ; If CheckObstacles forces reset, limit total time to 6 minute before Force restart BS
