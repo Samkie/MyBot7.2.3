@@ -58,8 +58,6 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 
 		; samm0d
 		If $ichkModTrain = 0 Then
-			ModTrain(True)
-		Else
 			CheckOverviewFullArmy(True) ; Check if army needs to be trained due donations
 			If Not ($g_bFullArmy) And $g_bTrainEnabled = True Then
 				If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
@@ -78,6 +76,8 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 					Return
 				EndIf
 			EndIf
+		Else
+			ModTrain(True)
 		EndIf
 		Collect() ; Empty Collectors
 		If _Sleep($DELAYRUNBOT1) Then Return
