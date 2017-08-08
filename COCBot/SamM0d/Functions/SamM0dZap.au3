@@ -63,8 +63,8 @@ Func SamM0dZap()
 
 	; Get the number of lightning spells
 
-	Local $iTroops = PrepareAttack($g_iMatchMode, True) ; Check remaining troops/spells
-	If $iTroops > 0 Then
+	;Local $iTroops = PrepareAttack($g_iMatchMode, True) ; Check remaining troops/spells
+	;If $iTroops > 0 Then
 		For $i = 0 To UBound($g_avAttackTroops) - 1
 			If $g_avAttackTroops[$i][0] = $eLSpell Then
 				If $aSpells[0][4] = 0 Then
@@ -80,7 +80,7 @@ Func SamM0dZap()
 				EndIf
 			EndIf
 		Next
-	EndIf
+	;EndIf
 
 	If $aSpells[0][4] + $aSpells[1][4] = 0 Then
 		SetLog("No lightning spells trained, time to go home!", $COLOR_ERROR)

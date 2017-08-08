@@ -29,7 +29,9 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 
 	; samm0d - set ocr farce capture to false
 	Local $wasForce = OcrForceCaptureRegion(False)
+	Local $bDarkElixirFlag = False
 	_CaptureRegions()
+	If _CheckPixel($aVillageHasDarkElixir, $g_bNoCapturePixel) Then $bDarkElixirFlag = True ; check if the village have a Dark Elixir Storage
 
 	getBuilderCount($bSuppressLog) ; update builder data
 	If _Sleep($DELAYRESPOND) Then Return
@@ -37,7 +39,7 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 	$g_aiCurrentLoot[$eLootTrophy] = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 	If Not $bSuppressLog Then Setlog(" [T]: " & _NumberFormat($g_aiCurrentLoot[$eLootTrophy]), $COLOR_SUCCESS)
 
-	If _CheckPixel($aVillageHasDarkElixir, $g_bNoCapturePixel) Then ; check if the village have a Dark Elixir Storage
+	If $bDarkElixirFlag Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootGold] = getResourcesMainScreen(696, 23)
 		$g_aiCurrentLoot[$eLootElixir] = getResourcesMainScreen(696, 74)
 		$g_aiCurrentLoot[$eLootDarkElixir] = getResourcesMainScreen(728, 123)
