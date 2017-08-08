@@ -629,8 +629,8 @@ Func DoVillageLoadSucess($iAcc)
 
 	;$iShouldRearm = (Random(0,1,1) = 0 ? 1 : 0)
 
-	$g_abNotNeedAllTime[0] = (Random(0,1,1) = 0 ? 1 : 0) ; check rearm
-	$g_abNotNeedAllTime[1] = (Random(0,1,1) = 0 ? 1 : 0) ; check tomb
+	If $g_abNotNeedAllTime[0] = False Then $g_abNotNeedAllTime[0] = (Random(0,1,1) = 1 ? True : False) ; check rearm
+	If $g_abNotNeedAllTime[1] = False Then $g_abNotNeedAllTime[1] = (Random(0,1,1) = 1 ? True : False) ; check tomb
 
 	$g_iCommandStop = -1
 	$iSelectAccError = 0
@@ -1402,7 +1402,9 @@ Func Wait4Main($bBuilderBase = False)
 			; village was attacked okay button
 			If _ColorCheck(_GetPixelColor(402, 516, $g_bNoCapturePixel), Hex(0xFFFFFF, 6), 5) And _ColorCheck(_GetPixelColor(405, 537, $g_bNoCapturePixel), Hex(0x5EAC10, 6), 20) Then
 				Click($aButtonVillageWasAttackOK[0],$aButtonVillageWasAttackOK[1],1,0,"#VWAO")
-				If _Sleep(1000) Then Return True
+				$g_abNotNeedAllTime[0] = True
+				$g_abNotNeedAllTime[1] = True
+				If _Sleep(500) Then Return True
 				$i = 0
 				ContinueLoop
 			EndIf
