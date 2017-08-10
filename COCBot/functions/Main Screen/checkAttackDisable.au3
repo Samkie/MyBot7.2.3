@@ -19,6 +19,8 @@
 Func checkAttackDisable($iSource, $Result = "")
 	Local $i = 0, $iCount = 0
 	Local $iModSource
+	; samm0d
+	Local $bchkQuickBase = False
 
 	If $g_bDisableBreakCheck = True Then Return ; check Disable break flag, added to prevent recursion for CheckBaseQuick
 
@@ -87,6 +89,8 @@ Func checkAttackDisable($iSource, $Result = "")
 				Return ; exit function, take a break text not found
 			EndIf
 		Case $g_iTaBChkTime
+			; samm0d
+			$bchkQuickBase = True
 			If $iSource = $g_iTaBChkAttack Then ; If from village search, need to return home
 				While _CheckPixel($aIsAttackPage, $g_bCapturePixel) = False ; Wait for attack page ready
 					If _Sleep($DELAYATTACKDISABLE500) Then Return
@@ -131,7 +135,8 @@ Func checkAttackDisable($iSource, $Result = "")
 	EndSwitch
 
 	Setlog("Prepare base before Personal Break..", $COLOR_INFO)
-	CheckBaseQuick(True) ; check and restock base before exit.
+	; samm0d
+	If $bchkQuickBase Then CheckBaseQuick(True) ; check and restock base before exit.
 
 	$g_bIsClientSyncError = False ; reset OOS fast restart flag
 	$g_bIsSearchLimit = False ; reset search limit flag

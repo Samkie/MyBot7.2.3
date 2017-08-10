@@ -16,6 +16,19 @@
 
 Func IsSearchModeActiveSamM0d($g_iMatchMode, $nocheckHeroes = False, $bNoLog = False)
 	; samm0d
+	Local $bMatchModeEnabled = False
+	Switch $g_iMatchMode
+		Case $DB
+			$bMatchModeEnabled = $g_abAttackTypeEnable[$DB]
+		Case $LB
+			$bMatchModeEnabled = $g_abAttackTypeEnable[$LB]
+		Case $TS
+			$bMatchModeEnabled = $g_abAttackTypeEnable[$TS]
+		Case Else
+			$bMatchModeEnabled = False
+	EndSwitch
+	If $bMatchModeEnabled = False Then Return False ; exit if no DB, LB, TS mode enabled
+
 	Local $currentCCCampsFull = $CCCapacity >= $CCStrength
 	Local $checkCCTroops = ($FullCCTroops And $g_iChkWait4CC = 1) Or ($currentCCCampsFull  And $g_iChkWait4CC = 1) Or $g_iChkWait4CC = 0
 	Local $checkCCSpells = $g_iChkWait4CCSpell = 0 Or ($g_bFullCCSpells And $g_iChkWait4CCSpell)
@@ -23,7 +36,7 @@ Func IsSearchModeActiveSamM0d($g_iMatchMode, $nocheckHeroes = False, $bNoLog = F
 	Local $currentSearch = $g_iSearchCount + 1
 	Local $currentTropies = $g_aiCurrentLoot[$eLootTrophy]
 	Local $currentArmyCamps = Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100)
-	Local $bMatchModeEnabled = False
+
 
 	Local $checkSearches = Int($currentSearch) >= Int($g_aiSearchSearchesMin[$g_iMatchMode]) And Int($currentSearch) <= Int($g_aiSearchSearchesMax[$g_iMatchMode]) And $g_abSearchSearchesEnable[$g_iMatchMode]
 	Local $checkTropies = Int($currentTropies) >= Int($g_aiSearchTrophiesMin[$g_iMatchMode]) And Int($currentTropies) <= Int($g_aiSearchTrophiesMax[$g_iMatchMode]) And $g_abSearchTropiesEnable[$g_iMatchMode]
@@ -48,19 +61,6 @@ Func IsSearchModeActiveSamM0d($g_iMatchMode, $nocheckHeroes = False, $bNoLog = F
 	Else
 		$g_bCheckSpells = False
 	EndIf
-
-	Switch $g_iMatchMode
-		Case $DB
-			$bMatchModeEnabled = $g_abAttackTypeEnable[$DB]
-		Case $LB
-			$bMatchModeEnabled = $g_abAttackTypeEnable[$LB]
-		Case $TS
-			$bMatchModeEnabled = $g_abAttackTypeEnable[$TS]
-		Case Else
-			$bMatchModeEnabled = False
-	EndSwitch
-
-	If $bMatchModeEnabled = False Then Return False ; exit if no DB, LB, TS mode enabled
 
 	If $checkHeroes And $g_bCheckSpells And $checkCCTroops Then ;If $checkHeroes Then
 		If ($checkSearches Or $g_abSearchSearchesEnable[$g_iMatchMode] = False) And ($checkTropies Or $g_abSearchTropiesEnable[$g_iMatchMode] = False) And ($checkArmyCamps Or $g_abSearchCampsEnable[$g_iMatchMode] = False) Then

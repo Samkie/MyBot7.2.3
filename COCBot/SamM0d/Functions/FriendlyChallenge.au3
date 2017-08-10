@@ -318,7 +318,7 @@ Func FriendlyChallenge()
 	Setlog("Checking Friendly Challenge at Clan Chat", $COLOR_INFO)
 
 	ForceCaptureRegion()
-	If _CheckColorPixel($aButtonClanWindowOpen[4], $aButtonClanWindowOpen[5], $aButtonClanWindowOpen[6], $aButtonClanWindowOpen[7]) Then
+	If _CheckColorPixel($aButtonClanWindowOpen[4], $aButtonClanWindowOpen[5], $aButtonClanWindowOpen[6], $aButtonClanWindowOpen[7], $g_bCapturePixel, "aButtonClanWindowOpen") Then
 		Click($aButtonClanWindowOpen[0], $aButtonClanWindowOpen[1], 1, 0, "#0168")
 		If _Wait4Pixel($aButtonClanWindowClose[4], $aButtonClanWindowClose[5], $aButtonClanWindowClose[6], $aButtonClanWindowClose[7], 1500) = False Then
 			SetLog("Clan Chat Did Not Open - Abandon Friendly Challenge")
@@ -598,13 +598,13 @@ Func ClostChatTab()
 		ForceCaptureRegion()
 		_CaptureRegion()
 		Select
-			Case _CheckColorPixel($aCloseChat[0], $aCloseChat[1], $aCloseChat[2], $aCloseChat[3], False)
+			Case _CheckColorPixel($aCloseChat[0], $aCloseChat[1], $aCloseChat[2], $aCloseChat[3], False, "aCloseChat")
 				Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0173") ;Clicks chat thing
-			Case _CheckColorPixel($aOpenChatTab[0], $aOpenChatTab[1], $aOpenChatTab[2], $aOpenChatTab[3], False)
+			Case _CheckColorPixel($aOpenChatTab[0], $aOpenChatTab[1], $aOpenChatTab[2], $aOpenChatTab[3], False, "aOpenChatTab")
 				ExitLoop
-			Case _CheckColorPixel($aButtonFCClose[4], $aButtonFCClose[5], $aButtonFCClose[6], $aButtonFCClose[7], False)
+			Case _CheckColorPixel($aButtonFCClose[4], $aButtonFCClose[5], $aButtonFCClose[6], $aButtonFCClose[7], False, "aButtonFCClose")
 				Click($aButtonFCClose[0], $aButtonFCClose[1], 1, 0, "#BtnFCClose") ;Clicks chat thing
-			Case _CheckColorPixel($aButtonFCBack[4], $aButtonFCBack[5], $aButtonFCBack[6], $aButtonFCBack[7], False)
+			Case _CheckColorPixel($aButtonFCBack[4], $aButtonFCBack[5], $aButtonFCBack[6], $aButtonFCBack[7], False, "aButtonFCBack")
 				AndroidBackButton()
 			Case Else
 				ClickP($aAway, 1, 0, "#0167") ;Click Away

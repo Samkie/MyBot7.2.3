@@ -55,7 +55,7 @@ Func SelectGoogleAccount($iSlot)
 
 	If _Sleep(250) Then Return False
 
-	If _CheckColorPixel($aButtonGoogleConnectRed[4], $aButtonGoogleConnectRed[5], $aButtonGoogleConnectRed[6], $aButtonGoogleConnectRed[7]) Then
+	If _CheckColorPixel($aButtonGoogleConnectRed[4], $aButtonGoogleConnectRed[5], $aButtonGoogleConnectRed[6], $aButtonGoogleConnectRed[7], $g_bCapturePixel, "aButtonGoogleConnectRed") Then
 		Click($aButtonGoogleConnectRed[0],$aButtonGoogleConnectRed[1],1,0,"#ConnectGoogle")
 	Else
 		Click($aButtonGoogleConnectGreen[0],$aButtonGoogleConnectGreen[1],2,500,"#ConnectGoogle")
@@ -120,8 +120,8 @@ Func DoLoadVillage()
 	Local $iCount = 0
 	$iCount = 0
 ;	$bNowWaitingConfirm = True
-	While Not _CheckColorPixel($aButtonVillageLoad[4], $aButtonVillageLoad[5], $aButtonVillageLoad[6], $aButtonVillageLoad[7])
-		If $g_iSamM0dDebug = 1 Then SetLog("village load button Color: " & _GetPixelColor(160, 380,True))
+	While Not _CheckColorPixel($aButtonVillageLoad[4], $aButtonVillageLoad[5], $aButtonVillageLoad[6], $aButtonVillageLoad[7], $g_bCapturePixel, "aButtonVillageLoad")
+		;If $g_iSamM0dDebug = 1 Then SetLog("village load button Color: " & _GetPixelColor(160, 380,True))
 		$iCount += 1
 		If $iCount = 90 Then
 			SetLog("Cannot load village load button, restart game...", $COLOR_RED)
@@ -131,7 +131,7 @@ Func DoLoadVillage()
 		If $iCount >= 180 Then
 			Return 0
 		EndIf
-		If _CheckColorPixel($aButtonGoogleConnectGreen[4], $aButtonGoogleConnectGreen[5], $aButtonGoogleConnectGreen[6], $aButtonGoogleConnectGreen[7]) Then
+		If _CheckColorPixel($aButtonGoogleConnectGreen[4], $aButtonGoogleConnectGreen[5], $aButtonGoogleConnectGreen[6], $aButtonGoogleConnectGreen[7], $g_bCapturePixel, "aButtonGoogleConnectGreen") Then
 			Return 2
 		EndIf
 		If _Sleep(1000) Then Return 0
@@ -534,7 +534,7 @@ Func DoSwitchAcc()
 					SmartWait4TrainMini($iMySwitchSmartWaitTime)
 					$iMySwitchSmartWaitTime = 0
 				EndIf
-				If _CheckColorPixel($aButtonSetting[4], $aButtonSetting[5], $aButtonSetting[6], $aButtonSetting[7]) Then
+				If _CheckColorPixel($aButtonSetting[4], $aButtonSetting[5], $aButtonSetting[6], $aButtonSetting[7], $g_bCapturePixel, "aButtonSetting") Then
 					If SelectGoogleAccount($iNextAcc) = True Then
 						$iCurActiveAcc = $iNextAcc
 						DoVillageLoadSucess($iCurActiveAcc)
@@ -1103,10 +1103,10 @@ Func btnMakeSwitchADBFolder()
 		EndIf
 	EndIf
 
-	If Not _CheckColorPixel($aButtonClose3[4], $aButtonClose3[5], $aButtonClose3[6], $aButtonClose3[7]) Then
+	If Not _CheckColorPixel($aButtonClose3[4], $aButtonClose3[5], $aButtonClose3[6], $aButtonClose3[7], $g_bCapturePixel, "aButtonClose3") Then
 		ClickP($aAway, 1, 0, "#0221") ;Click Away
 		If _Sleep($DELAYPROFILEREPORT1) Then Return
-		If _CheckColorPixel($aIsMain[0], $aIsMain[1], $aIsMain[2], $aIsMain[3]) Then
+		If _CheckColorPixel($aIsMain[0], $aIsMain[1], $aIsMain[2], $aIsMain[3], $g_bCapturePixel, "aIsMain") Then
 			Click(30, 40, 1, 0, "#0222") ; Click Info Profile Button
 			; Waiting for profile page fully load.
 			ForceCaptureRegion()
@@ -1127,9 +1127,9 @@ Func btnMakeSwitchADBFolder()
 	EndIf
 
 	_CaptureRegion()
-	If _CheckColorPixel($aButtonClose3[4], $aButtonClose3[5], $aButtonClose3[6], $aButtonClose3[7], $g_bNoCapturePixel) Then
+	If _CheckColorPixel($aButtonClose3[4], $aButtonClose3[5], $aButtonClose3[6], $aButtonClose3[7], $g_bNoCapturePixel, "aButtonClose3") Then
 		Local $iSecondBaseTabHeight
-		If _CheckColorPixel(146,146,0XB8B8A8,10,$g_bNoCapturePixel) = True Then
+		If _CheckColorPixel(146,146,0XB8B8A8,10,$g_bNoCapturePixel,"Profile Check Builder Base Tab") = True Then
 			$iSecondBaseTabHeight = 49
 		Else
 			$iSecondBaseTabHeight = 0
@@ -1149,7 +1149,7 @@ Func btnMakeSwitchADBFolder()
 			If Not _Wait4Pixel($aButtonClose2[4], $aButtonClose2[5], $aButtonClose2[6], $aButtonClose2[7], 1500, 100) Then
 				SetLog("Cannot load setting page, restart game...", $COLOR_RED)
 			EndIf
-			If _CheckColorPixel($aButtonGoogleConnectGreen[4], $aButtonGoogleConnectGreen[5], $aButtonGoogleConnectGreen[6], $aButtonGoogleConnectGreen[7]) Then
+			If _CheckColorPixel($aButtonGoogleConnectGreen[4], $aButtonGoogleConnectGreen[5], $aButtonGoogleConnectGreen[6], $aButtonGoogleConnectGreen[7], $g_bCapturePixel, "aButtonGoogleConnectGreen") Then
 				Click($aButtonGoogleConnectGreen[0],$aButtonGoogleConnectGreen[1],1,0,"#ConnectGoogle")
 			EndIf
 			If Not _Wait4Pixel($aButtonGoogleConnectRed[4], $aButtonGoogleConnectRed[5], $aButtonGoogleConnectRed[6], $aButtonGoogleConnectRed[7], 1500, 100) Then
@@ -1385,10 +1385,10 @@ Func Wait4Main($bBuilderBase = False)
 		If $g_iSamM0dDebug = 1 Then Setlog("Wait4Main Loop = " & $i & "   ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
 		ForceCaptureRegion()
 		_CaptureRegion()
-		If _CheckColorPixel($aIsMain[0], $aIsMain[1], $aIsMain[2], $aIsMain[3], $g_bNoCapturePixel) Then
+		If _CheckColorPixel($aIsMain[0], $aIsMain[1], $aIsMain[2], $aIsMain[3], $g_bNoCapturePixel, "aIsMain") Then
 			If $g_iSamM0dDebug = 1 Then Setlog("Main Village - Screen cleared, Wait4Main exit", $COLOR_DEBUG)
 			Return True
-		ElseIf _CheckColorPixel($aIsOnBuilderIsland[0], $aIsOnBuilderIsland[1], $aIsOnBuilderIsland[2], $aIsOnBuilderIsland[3], $g_bNoCapturePixel) Then
+		ElseIf _CheckColorPixel($aIsOnBuilderIsland[0], $aIsOnBuilderIsland[1], $aIsOnBuilderIsland[2], $aIsOnBuilderIsland[3], $g_bNoCapturePixel, "aIsOnBuilderIsland") Then
 			If Not $bBuilderBase Then
 				ZoomOut()
 				SwitchBetweenBases()

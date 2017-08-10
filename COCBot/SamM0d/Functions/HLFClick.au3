@@ -248,10 +248,10 @@ Func CheckClickMsg(ByRef $x, ByRef $y, ByRef $times, ByRef $speed, ByRef $MsgCod
 			$MsgCode = $aButtonOpenLaunchAttack[8]
 			Return HMLClickPR($aButtonOpenLaunchAttack,$x,$y,1)
 		Case "#0150"
-			If _CheckColorPixel($aButtonAttackFindMatch[4], $aButtonAttackFindMatch[5], $aButtonAttackFindMatch[6], $aButtonAttackFindMatch[7]) Then
+			If _CheckColorPixel($aButtonAttackFindMatch[4], $aButtonAttackFindMatch[5], $aButtonAttackFindMatch[6], $aButtonAttackFindMatch[7], $g_bCapturePixel, "aButtonAttackFindMatch") Then
 				$MsgCode = $aButtonAttackFindMatch[8]
 				Return HMLClickPR($aButtonAttackFindMatch,$x,$y,1)
-			ElseIf _CheckColorPixel($aButtonAttackFindMatchWShield[4], $aButtonAttackFindMatchWShield[5], $aButtonAttackFindMatchWShield[6], $aButtonAttackFindMatchWShield[7]) Then
+			ElseIf _CheckColorPixel($aButtonAttackFindMatchWShield[4], $aButtonAttackFindMatchWShield[5], $aButtonAttackFindMatchWShield[6], $aButtonAttackFindMatchWShield[7], $g_bCapturePixel, "aButtonAttackFindMatchWShield") Then
 				$MsgCode = $aButtonAttackFindMatchWShield[8]
 				Return HMLClickPR($aButtonAttackFindMatchWShield,$x,$y,1)
 			Else
@@ -444,7 +444,9 @@ Func HMLClickAway(ByRef $x, ByRef $y, ByRef $MsgCode)
 		_CaptureRegion()
 		For $i = 1 To 7
 			Local $tempButton = Eval("aButtonClose" & $i)
-			If _CheckColorPixel($tempButton[4], $tempButton[5], $tempButton[6], $tempButton[7]) Then
+			Local $sMsg = Default
+			If $EnableHMLSetLog = 1 Then $sMsg = "aButtonClose" & $i
+			If _CheckColorPixel($tempButton[4], $tempButton[5], $tempButton[6], $tempButton[7], $g_bCapturePixel, $sMsg) Then
 				$MsgCode = $tempButton[8]
 				Return HMLClickPR($tempButton,$x,$y)
 			EndIf
