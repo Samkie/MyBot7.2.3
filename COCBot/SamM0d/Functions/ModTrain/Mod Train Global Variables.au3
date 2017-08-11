@@ -69,51 +69,51 @@ Global $MyTroops[19][5] = _
 ;name,order,size,unit quantity,train cost
 
 
-;~ Global $MyTroopsButton[19][3] = _
-;~ [["Barb", 0, 0], _
-;~ ["Arch"	, 1, 0], _
-;~ ["Giant", 0, 1], _
-;~ ["Gobl"	, 1, 1], _
-;~ ["Wall"	, 0, 2], _
-;~ ["Ball"	, 1, 2], _
-;~ ["Wiza"	, 0, 3], _
-;~ ["Heal"	, 1, 3], _
-;~ ["Drag"	, 0, 4], _
-;~ ["Pekk"	, 1, 4], _
-;~ ["BabyD", 0, 5], _
-;~ ["Mine"	, 1, 5], _
-;~ ["Mini"	, 0, 6], _
-;~ ["Hogs"	, 1, 6], _
-;~ ["Valk"	, 0, 7], _
-;~ ["Gole"	, 1, 7], _
-;~ ["Witc"	, 2, 0], _
-;~ ["Lava"	, 3, 0], _
-;~ ["Bowl"	, 2, 1]]
-
-Global Enum $eTrainBarb, $eTrainArch, $eTrainGiant, $eTrainBatt, $eTrainGobl, $eTrainWall, $eTrainBall, $eTrainWiza, $eTrainHeal, $eTrainDrag, $eTrainPekk, $eTrainBabyD, $eTrainMine, _
-		$eTrainMini, $eTrainHogs, $eTrainValk, $eTrainGole, $eTrainWitc, $eTrainLava, $eTrainBowl
-
-Global $MyTroopsButton[20][3] = _
+Global $MyTroopsButton[19][3] = _
 [["Barb", 0, 0], _
 ["Arch"	, 1, 0], _
 ["Giant", 0, 1], _
-["Batt", 1, 1], _
-["Gobl"	, 0, 2], _
-["Wall"	, 1, 2], _
-["Ball"	, 0, 3], _
-["Wiza"	, 1, 3], _
-["Heal"	, 0, 4], _
-["Drag"	, 1, 4], _
-["Pekk"	, 0, 5], _
-["BabyD", 1, 5], _
-["Mine"	, 0, 6], _
-["Mini"	, 0, 7], _
-["Hogs"	, 1, 7], _
-["Valk"	, 2, 0], _
-["Gole"	, 3, 0], _
-["Witc"	, 2, 1], _
-["Lava"	, 3, 1], _
-["Bowl"	, 2, 2]]
+["Gobl"	, 1, 1], _
+["Wall"	, 0, 2], _
+["Ball"	, 1, 2], _
+["Wiza"	, 0, 3], _
+["Heal"	, 1, 3], _
+["Drag"	, 0, 4], _
+["Pekk"	, 1, 4], _
+["BabyD", 0, 5], _
+["Mine"	, 1, 5], _
+["Mini"	, 0, 6], _
+["Hogs"	, 1, 6], _
+["Valk"	, 0, 7], _
+["Gole"	, 1, 7], _
+["Witc"	, 2, 0], _
+["Lava"	, 3, 0], _
+["Bowl"	, 2, 1]]
+
+Global Enum $eTrainBarb, $eTrainArch, $eTrainGiant, $eTrainGobl, $eTrainWall, $eTrainBall, $eTrainWiza, $eTrainHeal, $eTrainDrag, $eTrainPekk, $eTrainBabyD, $eTrainMine, _
+		$eTrainMini, $eTrainHogs, $eTrainValk, $eTrainGole, $eTrainWitc, $eTrainLava, $eTrainBowl
+
+;~ Global $MyTroopsButton[20][3] = _
+;~ [["Barb", 0, 0], _
+;~ ["Arch"	, 1, 0], _
+;~ ["Giant", 0, 1], _
+;~ ["Batt", 1, 1], _
+;~ ["Gobl"	, 0, 2], _
+;~ ["Wall"	, 1, 2], _
+;~ ["Ball"	, 0, 3], _
+;~ ["Wiza"	, 1, 3], _
+;~ ["Heal"	, 0, 4], _
+;~ ["Drag"	, 1, 4], _
+;~ ["Pekk"	, 0, 5], _
+;~ ["BabyD", 1, 5], _
+;~ ["Mine"	, 0, 6], _
+;~ ["Mini"	, 0, 7], _
+;~ ["Hogs"	, 1, 7], _
+;~ ["Valk"	, 2, 0], _
+;~ ["Gole"	, 3, 0], _
+;~ ["Witc"	, 2, 1], _
+;~ ["Lava"	, 3, 1], _
+;~ ["Bowl"	, 2, 2]]
 
 
 Global $MySpellsButton[10][3] = _
