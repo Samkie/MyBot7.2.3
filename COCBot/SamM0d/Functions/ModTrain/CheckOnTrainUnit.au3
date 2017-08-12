@@ -240,7 +240,7 @@ Func CheckOnTrainUnit($hHBitmap)
 				If $ichkDisablePretrainTroops Then
 					SetLog("Pre-Train troops disable by user, remove all pre-train troops.", $COLOR_ERROR)
 				Else
-					SetLog("Error: Troops size not correct but pretrain already." & $iMyTroopsCampSize, $COLOR_ERROR)
+					SetLog("Error: Troops size not correct but pretrain already.", $COLOR_ERROR)
 					SetLog("Error: Detected Troops size = " & $iAvailableCamp & ", My Troops size = " & $iMyTroopsCampSize, $COLOR_ERROR)
 				EndIf
 				If gotoTrainTroops() = False Then Return

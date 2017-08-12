@@ -234,8 +234,12 @@ Func CheckOnBrewUnit($hHBitmap)
 
 		If $bGotOnQueueFlag And Not $bGotOnBrewFlag Then
 			If $iAvailableCamp < $iMySpellsCampSize Or $g_bDoPrebrewspell = 0 Then
-				SetLog("Error: Spells size not correct but pretrain already." & $iMySpellsCampSize, $COLOR_ERROR)
-				SetLog("Error: Detected Spells size = " & $iAvailableCamp & ", My Spells size = " & $iMySpellsCampSize, $COLOR_ERROR)
+				If $g_bDoPrebrewspell = 0 Then
+					SetLog("Pre-Brew spells disable by user, remove all pre-train spells.", $COLOR_ERROR)
+				Else
+					SetLog("Error: Spells size not correct but pretrain already.", $COLOR_ERROR)
+					SetLog("Error: Detected Spells size = " & $iAvailableCamp & ", My Spells size = " & $iMySpellsCampSize, $COLOR_ERROR)
+				EndIf
 				If gotoBrewSpells() = False Then Return
 				RemoveAllPreTrainTroops()
 				$g_bRestartCheckTroop = True
