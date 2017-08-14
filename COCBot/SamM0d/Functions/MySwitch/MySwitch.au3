@@ -1404,6 +1404,7 @@ Func Wait4Main($bBuilderBase = False)
 				Click($aButtonVillageWasAttackOK[0],$aButtonVillageWasAttackOK[1],1,0,"#VWAO")
 				$g_abNotNeedAllTime[0] = True
 				$g_abNotNeedAllTime[1] = True
+				$g_bIsClientSyncError = False
 				If _Sleep(500) Then Return True
 				$i = 0
 				ContinueLoop

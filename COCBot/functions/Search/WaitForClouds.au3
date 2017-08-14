@@ -69,7 +69,7 @@ Func WaitForClouds()
 				If $bigCount > $maxLongSearchCount Then ; check maximum wait time
 					$iSearchTime = __TimerDiff($hMinuteTimer) / 60000 ;get time since minute timer start in minutes
 					SetLog("Spent " & $iSearchTime & " minutes in Clouds searching, Restarting CoC and Bot...", $COLOR_ERROR)
-					$g_bIsClientSyncError = False ; disable fast OOS restart if not simple error and restarting CoC
+					;$g_bIsClientSyncError = False ; disable fast OOS restart if not simple error and restarting CoC
 					$g_bRestart = True
 					CloseCoC(True)
 					Return
@@ -89,8 +89,15 @@ Func WaitForClouds()
 		If $iSearchTime >= $iLastTime + 1 Then
 			Setlog("Cloud wait time " & StringFormat("%.1f", $iSearchTime) & " minute(s)", $COLOR_INFO)
 			$iLastTime += 1
+			; samm0d - everything reset cause of PB
+			If chkAttackSearchPersonalBreak() = True Then
+				checkMainScreen()
+				checkObstacles_ResetSearch()
+				CloseCoC(True)
+				Return
+			EndIf
 			; once a minute safety checks for search fail/retry msg and Personal Break events and early detection if CoC app has crashed inside emulator (Bluestacks issue mainly)
-			If chkAttackSearchFail() = 2 Or chkAttackSearchPersonalBreak() = True Or GetAndroidProcessPID() = 0 Then
+			If chkAttackSearchFail() = 2 Or GetAndroidProcessPID() = 0 Then
 				resetAttackSearch()
 				Return
 			EndIf
@@ -105,26 +112,7 @@ Func WaitForClouds()
 
 		ForceCaptureRegion() ; ensure screenshots are not cached
 
-		;=================samm0d - check is that pop out google switch page
-;~ 		If _ColorCheck(_GetPixelColor(430, 333 + $g_iMidOffsetY , $g_bNoCapturePixel), Hex(0xFF8300, 6), 20) = True Then
-;~ 			$iLostConnectionCount += 1
-;~ 			If $iLostConnectionCount >= 80 Then ; Lost Connection over 20 seconds
-;~ 				$iSearchTime = TimerDiff($hMinuteTimer) / 60000 ;get time since minute timer start in minutes
-;~ 				SetLog("Connection Lost: Spent " & $iSearchTime & " minutes in Clouds searching, Restarting CoC and Bot...", $COLOR_ERROR)
-;~ 				$g_bIsClientSyncError = True
-;~ 				$g_bRestart = True
-;~ 				CloseCoC(True)
-;~ 				Return
-;~ 			EndIf
-;~ 		Else
-;~ 			$iLostConnectionCount = 0
-;~ 		EndIf
-
-;~ 		If _ColorCheck(_GetPixelColor(160, 380, $g_bNoCapturePixel), Hex(0xFFFFFF, 6),5) And _ColorCheck(_GetPixelColor(699, 380, $g_bNoCapturePixel), Hex(0xFFFFFF, 6),5) Then
-;~ 			AndroidBackButton()
-;~ 			If _Sleep(1000) Then Return
-;~ 		EndIf
-		; launch attack button and chat button found, back to main?
+		;=================samm0d - launch attack button and chat button found, back to main?
 		If _ColorCheck(_GetPixelColor($aButtonOpenLaunchAttack[4], $aButtonOpenLaunchAttack[5],$g_bNoCapturePixel), Hex($aButtonOpenLaunchAttack[6], 6),$aButtonOpenLaunchAttack[7]) And _
 		_ColorCheck(_GetPixelColor($aButtonClanWindowOpen[4], $aButtonClanWindowOpen[5],$g_bNoCapturePixel), Hex($aButtonClanWindowOpen[6], 6),$aButtonClanWindowOpen[7]) Then
 			If $bEnabledGUI = True Then

@@ -286,11 +286,8 @@ Func CheckOnBrewUnit($hHBitmap)
 					Return False
 				EndIf
 			EndIf
-			Local $bOrPrebrewspell
-			For $i = $enumLightning To $enumSkeleton
-				$bOrPrebrewspell = BitOR($bOrPrebrewspell, Eval("ichkPre" & $MySpells[$i][0]))
-			Next
-			If $bOrPrebrewspell = 0 Then
+
+			If $g_bDoPrebrewspell = 0 Then
 				SetLog("Pre-brew spell disable by user, remove all pre-brew spell.",$COLOR_INFO)
 				If gotoBrewSpells() = False Then Return
 				RemoveAllPreTrainTroops()

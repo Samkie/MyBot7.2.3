@@ -258,8 +258,8 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 	If _ColorCheck(_GetPixelColor(235, 209 + $g_iMidOffsetY), Hex(0x9E3826, 6), 20) Then
 		SetDebugLog("checkObstacles: Found Window to close")
 		PureClick(429, 493 + $g_iMidOffsetY, 1, 0, "#0132") ;See if village was attacked, clicks Okay
-		$g_abNotNeedAllTime[0] = True
-		$g_abNotNeedAllTime[1] = True
+		; samm0d
+		checkObstacles_ResetSearch()
 		$g_bMinorObstacle = True
 		If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 		Return False
