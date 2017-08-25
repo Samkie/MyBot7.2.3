@@ -29,7 +29,8 @@ Func MyTrainClick($TroopButton, $iTimes = 1, $iSpeed = 0, $sdebugtxt="", $bIsBre
 		Local $aRegionForScan[4] = [0,0,0,0]
 		Local $aTroopsRegionForScan[4][4] = [[26,411,815,435],[26,512,815,536],[640,411,831,435],[640,512,831,536]]
 		;Local $aTroopsRegionForScan[4][4] = [[26,411,815,435],[26,512,815,536],[540,411,831,435],[540,512,831,536]]
-		Local $aSpellsRegionFOrScan[2][4] = [[26,411,521,435],[26,512,521,536]]
+;~ 		Local $aSpellsRegionForScan[2][4] = [[26,411,521,435],[26,512,521,536]]
+		Local $aSpellsRegionForScan[2][4] = [[26,411,615,435],[26,512,615,536]] ; event 25-08
 		Local $iRegionForClick
 		Local $hHBitmapRegionForScan
 		Local $aTempA
@@ -43,11 +44,11 @@ Func MyTrainClick($TroopButton, $iTimes = 1, $iSpeed = 0, $sdebugtxt="", $bIsBre
 			$aRegionForScan[3] = $aTroopsRegionForScan[$iRegionForClick][3]
 
 		Else
-			$iRegionForClick = $MyTroopsButton[Eval("enum" & $TroopButton)][1]
-			$aRegionForScan[0] = $aSpellsRegionFOrScan[$iRegionForClick][0]
-			$aRegionForScan[1] = $aSpellsRegionFOrScan[$iRegionForClick][1]
-			$aRegionForScan[2] = $aSpellsRegionFOrScan[$iRegionForClick][2]
-			$aRegionForScan[3] = $aSpellsRegionFOrScan[$iRegionForClick][3]
+			$iRegionForClick = $MySpellsButton[Eval("eBrew" & $TroopButton)][1]
+			$aRegionForScan[0] = $aSpellsRegionForScan[$iRegionForClick][0]
+			$aRegionForScan[1] = $aSpellsRegionForScan[$iRegionForClick][1]
+			$aRegionForScan[2] = $aSpellsRegionForScan[$iRegionForClick][2]
+			$aRegionForScan[3] = $aSpellsRegionForScan[$iRegionForClick][3]
 			$TroopButton = "Spell" & $TroopButton
 		EndIf
 
@@ -102,6 +103,211 @@ Func MyTrainClick($TroopButton, $iTimes = 1, $iSpeed = 0, $sdebugtxt="", $bIsBre
 		Return False
 	EndIf
 EndFunc   ;==>MyTrainClick
+
+Func MakeTroopsAndSpellsTrainImage()
+
+	Local $currentRunState = $g_bRunState
+	$g_bRunState = True
+	; capture region left upper
+	SetLog("MakeTroopsAndSpellsTrainImage Start")
+	ClickP($aAway, 1, 0, "#0268") ;Click Away to clear open windows in case user interupted
+	If _Sleep(200) Then Return
+
+	If WaitforPixel(31, 515 + $g_iBottomOffsetY, 33, 517 + $g_iBottomOffsetY, Hex(0xFFFDED, 6), 10, 20) Then
+		If $g_iSamM0dDebug = 1 Then SetLog("Click $aArmyTrainButton", $COLOR_SUCCESS)
+		If IsMainPage() Then
+			If $g_bUseRandomClick = False Then
+				Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#1293") ; Button Army Overview
+			Else
+				ClickR($aArmyTrainButtonRND, $aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0)
+			EndIf
+		EndIf
+	EndIf
+
+	If _Sleep(250) Then Return
+
+	If gotoTrainTroops() = False Then Return
+	RemoveAllPreTrainTroops()
+
+	Local $iCount = 0
+	Local $iSlotWidth = 98.5
+	Local $iStartingOffset = 45
+	Local $iUpperLeftTroopElixirStartOffset = 26
+	Local $iUpperLeftTroopDarkElixirStartOffset = 624
+	Local $iUpperRightTroopDarkElixirStartOffset = 640
+	Local $iUpperRowY1 = 413
+	Local $iUpperRowY2 = 433
+	Local $iLowerRowY1 = 514
+	Local $iLowerRowY2 = 534
+
+	_CaptureRegion2()
+	Local $aTemp[1][3]
+	$iCount = 0
+	For $i = 0 To UBound($MyTroopsButton) - 1
+		If $MyTroopsButton[$i][1] = 0 Then
+			ReDim $aTemp[$iCount + 1][3]
+			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
+			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
+			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
+			$iCount += 1
+		EndIf
+	Next
+	_ArraySort($aTemp,0,0,0,2)
+	For $i = 0 to 5
+		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
+		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
+		If $hHBitmapTest <> 0 Then
+			GdiDeleteHBitmap($hHBitmapTest)
+		EndIf
+	Next
+	For $i = 0 to 1
+		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
+		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i + 6][0] & "_92", True)
+		If $hHBitmapTest <> 0 Then
+			GdiDeleteHBitmap($hHBitmapTest)
+		EndIf
+	Next
+
+	Local $aTemp[1][3]
+	$iCount = 0
+	For $i = 0 To UBound($MyTroopsButton) - 1
+		If $MyTroopsButton[$i][1] = 1 Then
+			ReDim $aTemp[$iCount + 1][3]
+			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
+			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
+			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
+			$iCount += 1
+		EndIf
+	Next
+	_ArraySort($aTemp,0,0,0,2)
+	For $i = 0 to 5
+		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
+		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
+		If $hHBitmapTest <> 0 Then
+			GdiDeleteHBitmap($hHBitmapTest)
+		EndIf
+	Next
+	For $i = 0 to 1
+		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
+		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i + 6][0] & "_92", True)
+		If $hHBitmapTest <> 0 Then
+			GdiDeleteHBitmap($hHBitmapTest)
+		EndIf
+	Next
+
+	If CheckNeedSwipe(19) = False Then
+		SetLog("Cannot click drag to select troop" , $COLOR_ERROR)
+		Return
+	EndIf
+
+	Sleep(1000)
+
+	_CaptureRegion2()
+
+	Local $aTemp[1][3]
+	$iCount = 0
+	For $i = 0 To UBound($MyTroopsButton) - 1
+		If $MyTroopsButton[$i][1] = 2 Then
+			ReDim $aTemp[$iCount + 1][3]
+			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
+			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
+			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
+			$iCount += 1
+		EndIf
+	Next
+	_ArraySort($aTemp,0,0,0,2)
+	For $i = 0 to $iCount - 1
+		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
+		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
+		If $hHBitmapTest <> 0 Then
+			GdiDeleteHBitmap($hHBitmapTest)
+		EndIf
+	Next
+
+	Local $aTemp[1][3]
+	$iCount = 0
+	For $i = 0 To UBound($MyTroopsButton) - 1
+		If $MyTroopsButton[$i][1] = 3 Then
+			ReDim $aTemp[$iCount + 1][3]
+			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
+			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
+			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
+			$iCount += 1
+		EndIf
+	Next
+	_ArraySort($aTemp,0,0,0,2)
+	For $i = 0 to $iCount - 1
+		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
+		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
+		If $hHBitmapTest <> 0 Then
+			GdiDeleteHBitmap($hHBitmapTest)
+		EndIf
+	Next
+
+	If gotoBrewSpells() = False Then Return
+	RemoveAllPreTrainTroops()
+
+	Local $iUpperLeftSpellStartOffset = 26
+;~ 	Local $iUpperLeftDarkSpellStartOffset = 329
+	Local $iUpperLeftDarkSpellStartOffset = 423 ; event 25-08
+
+	_CaptureRegion2()
+	Local $aTemp[1][3]
+	$iCount = 0
+	For $i = 0 To UBound($MySpellsButton) - 1
+		If $MySpellsButton[$i][1] = 0 Then
+			ReDim $aTemp[$iCount + 1][3]
+			$aTemp[$iCount][0] = $MySpellsButton[$i][0]
+			$aTemp[$iCount][1] = $MySpellsButton[$i][1]
+			$aTemp[$iCount][2] = $MySpellsButton[$i][2]
+			$iCount += 1
+		EndIf
+	Next
+	_ArraySort($aTemp,0,0,0,2)
+	For $i = 0 to 3
+		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
+		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i][0] & "_93", True)
+		If $hHBitmapTest <> 0 Then
+			GdiDeleteHBitmap($hHBitmapTest)
+		EndIf
+	Next
+	For $i = 0 to 1
+		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
+		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i + 4][0] & "_93", True)
+		If $hHBitmapTest <> 0 Then
+			GdiDeleteHBitmap($hHBitmapTest)
+		EndIf
+	Next
+
+	Local $aTemp[1][3]
+	$iCount = 0
+	For $i = 0 To UBound($MySpellsButton) - 1
+		If $MySpellsButton[$i][1] = 1 Then
+			ReDim $aTemp[$iCount + 1][3]
+			$aTemp[$iCount][0] = $MySpellsButton[$i][0]
+			$aTemp[$iCount][1] = $MySpellsButton[$i][1]
+			$aTemp[$iCount][2] = $MySpellsButton[$i][2]
+			$iCount += 1
+		EndIf
+	Next
+	_ArraySort($aTemp,0,0,0,2)
+	For $i = 0 to 2
+		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
+		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i][0] & "_93", True)
+		If $hHBitmapTest <> 0 Then
+			GdiDeleteHBitmap($hHBitmapTest)
+		EndIf
+	Next
+	For $i = 0 to 1
+		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
+		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i + 3][0] & "_93", True)
+		If $hHBitmapTest <> 0 Then
+			GdiDeleteHBitmap($hHBitmapTest)
+		EndIf
+	Next
+ SetLog("MakeTroopsAndSpellsTrainImage END")
+	$g_bRunState = $currentRunState
+EndFunc
 
 ;~ Func MakeTroopsAndSpellsTrainImage()
 ;~ 	Local $currentRunState = $g_bRunState
@@ -310,206 +516,206 @@ EndFunc   ;==>MyTrainClick
 
 ;~ EndFunc
 
-Func MakeTroopsAndSpellsTrainImage()
+;~ Func MakeTroopsAndSpellsTrainImage()
 
-	Local $currentRunState = $g_bRunState
-	$g_bRunState = True
-	; capture region left upper
-	SetLog("MakeTroopsAndSpellsTrainImage Start")
-	ClickP($aAway, 1, 0, "#0268") ;Click Away to clear open windows in case user interupted
-	If _Sleep(200) Then Return
+;~ 	Local $currentRunState = $g_bRunState
+;~ 	$g_bRunState = True
+;~ 	; capture region left upper
+;~ 	SetLog("MakeTroopsAndSpellsTrainImage Start")
+;~ 	ClickP($aAway, 1, 0, "#0268") ;Click Away to clear open windows in case user interupted
+;~ 	If _Sleep(200) Then Return
 
-	If WaitforPixel(31, 515 + $g_iBottomOffsetY, 33, 517 + $g_iBottomOffsetY, Hex(0xFFFDED, 6), 10, 20) Then
-		If $g_iSamM0dDebug = 1 Then SetLog("Click $aArmyTrainButton", $COLOR_SUCCESS)
-		If IsMainPage() Then
-			If $g_bUseRandomClick = False Then
-				Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#1293") ; Button Army Overview
-			Else
-				ClickR($aArmyTrainButtonRND, $aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0)
-			EndIf
-		EndIf
-	EndIf
+;~ 	If WaitforPixel(31, 515 + $g_iBottomOffsetY, 33, 517 + $g_iBottomOffsetY, Hex(0xFFFDED, 6), 10, 20) Then
+;~ 		If $g_iSamM0dDebug = 1 Then SetLog("Click $aArmyTrainButton", $COLOR_SUCCESS)
+;~ 		If IsMainPage() Then
+;~ 			If $g_bUseRandomClick = False Then
+;~ 				Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#1293") ; Button Army Overview
+;~ 			Else
+;~ 				ClickR($aArmyTrainButtonRND, $aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0)
+;~ 			EndIf
+;~ 		EndIf
+;~ 	EndIf
 
-	If _Sleep(250) Then Return
+;~ 	If _Sleep(250) Then Return
 
-	If gotoTrainTroops() = False Then Return
-	RemoveAllPreTrainTroops()
+;~ 	If gotoTrainTroops() = False Then Return
+;~ 	RemoveAllPreTrainTroops()
 
-	Local $iCount = 0
-	Local $iSlotWidth = 98.5
-	Local $iStartingOffset = 45
-	Local $iUpperLeftTroopElixirStartOffset = 26
-	Local $iUpperLeftTroopDarkElixirStartOffset = 624
-	Local $iUpperRightTroopDarkElixirStartOffset = 640
-	Local $iUpperRowY1 = 413
-	Local $iUpperRowY2 = 433
-	Local $iLowerRowY1 = 514
-	Local $iLowerRowY2 = 534
+;~ 	Local $iCount = 0
+;~ 	Local $iSlotWidth = 98.5
+;~ 	Local $iStartingOffset = 45
+;~ 	Local $iUpperLeftTroopElixirStartOffset = 26
+;~ 	Local $iUpperLeftTroopDarkElixirStartOffset = 624
+;~ 	Local $iUpperRightTroopDarkElixirStartOffset = 640
+;~ 	Local $iUpperRowY1 = 413
+;~ 	Local $iUpperRowY2 = 433
+;~ 	Local $iLowerRowY1 = 514
+;~ 	Local $iLowerRowY2 = 534
 
-	_CaptureRegion2()
-	Local $aTemp[1][3]
-	$iCount = 0
-	For $i = 0 To UBound($MyTroopsButton) - 1
-		If $MyTroopsButton[$i][1] = 0 Then
-			ReDim $aTemp[$iCount + 1][3]
-			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
-			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
-			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
-			$iCount += 1
-		EndIf
-	Next
-	_ArraySort($aTemp,0,0,0,2)
-	For $i = 0 to 5
-		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
-		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
-		If $hHBitmapTest <> 0 Then
-			GdiDeleteHBitmap($hHBitmapTest)
-		EndIf
-	Next
-	For $i = 0 to 1
-		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
-		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i + 6][0] & "_92", True)
-		If $hHBitmapTest <> 0 Then
-			GdiDeleteHBitmap($hHBitmapTest)
-		EndIf
-	Next
+;~ 	_CaptureRegion2()
+;~ 	Local $aTemp[1][3]
+;~ 	$iCount = 0
+;~ 	For $i = 0 To UBound($MyTroopsButton) - 1
+;~ 		If $MyTroopsButton[$i][1] = 0 Then
+;~ 			ReDim $aTemp[$iCount + 1][3]
+;~ 			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
+;~ 			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
+;~ 			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
+;~ 			$iCount += 1
+;~ 		EndIf
+;~ 	Next
+;~ 	_ArraySort($aTemp,0,0,0,2)
+;~ 	For $i = 0 to 5
+;~ 		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
+;~ 		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
+;~ 		If $hHBitmapTest <> 0 Then
+;~ 			GdiDeleteHBitmap($hHBitmapTest)
+;~ 		EndIf
+;~ 	Next
+;~ 	For $i = 0 to 1
+;~ 		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
+;~ 		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i + 6][0] & "_92", True)
+;~ 		If $hHBitmapTest <> 0 Then
+;~ 			GdiDeleteHBitmap($hHBitmapTest)
+;~ 		EndIf
+;~ 	Next
 
-	Local $aTemp[1][3]
-	$iCount = 0
-	For $i = 0 To UBound($MyTroopsButton) - 1
-		If $MyTroopsButton[$i][1] = 1 Then
-			ReDim $aTemp[$iCount + 1][3]
-			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
-			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
-			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
-			$iCount += 1
-		EndIf
-	Next
-	_ArraySort($aTemp,0,0,0,2)
-	For $i = 0 to 5
-		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
-		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
-		If $hHBitmapTest <> 0 Then
-			GdiDeleteHBitmap($hHBitmapTest)
-		EndIf
-	Next
-	For $i = 0 to 1
-		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
-		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i + 6][0] & "_92", True)
-		If $hHBitmapTest <> 0 Then
-			GdiDeleteHBitmap($hHBitmapTest)
-		EndIf
-	Next
+;~ 	Local $aTemp[1][3]
+;~ 	$iCount = 0
+;~ 	For $i = 0 To UBound($MyTroopsButton) - 1
+;~ 		If $MyTroopsButton[$i][1] = 1 Then
+;~ 			ReDim $aTemp[$iCount + 1][3]
+;~ 			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
+;~ 			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
+;~ 			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
+;~ 			$iCount += 1
+;~ 		EndIf
+;~ 	Next
+;~ 	_ArraySort($aTemp,0,0,0,2)
+;~ 	For $i = 0 to 5
+;~ 		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftTroopElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
+;~ 		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
+;~ 		If $hHBitmapTest <> 0 Then
+;~ 			GdiDeleteHBitmap($hHBitmapTest)
+;~ 		EndIf
+;~ 	Next
+;~ 	For $i = 0 to 1
+;~ 		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
+;~ 		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i + 6][0] & "_92", True)
+;~ 		If $hHBitmapTest <> 0 Then
+;~ 			GdiDeleteHBitmap($hHBitmapTest)
+;~ 		EndIf
+;~ 	Next
 
-	If CheckNeedSwipe(19) = False Then
-		SetLog("Cannot click drag to select troop" , $COLOR_ERROR)
-		Return
-	EndIf
+;~ 	If CheckNeedSwipe(19) = False Then
+;~ 		SetLog("Cannot click drag to select troop" , $COLOR_ERROR)
+;~ 		Return
+;~ 	EndIf
 
-	Sleep(1000)
+;~ 	Sleep(1000)
 
-	_CaptureRegion2()
+;~ 	_CaptureRegion2()
 
-	Local $aTemp[1][3]
-	$iCount = 0
-	For $i = 0 To UBound($MyTroopsButton) - 1
-		If $MyTroopsButton[$i][1] = 2 Then
-			ReDim $aTemp[$iCount + 1][3]
-			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
-			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
-			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
-			$iCount += 1
-		EndIf
-	Next
-	_ArraySort($aTemp,0,0,0,2)
-	For $i = 0 to $iCount - 1
-		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
-		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
-		If $hHBitmapTest <> 0 Then
-			GdiDeleteHBitmap($hHBitmapTest)
-		EndIf
-	Next
+;~ 	Local $aTemp[1][3]
+;~ 	$iCount = 0
+;~ 	For $i = 0 To UBound($MyTroopsButton) - 1
+;~ 		If $MyTroopsButton[$i][1] = 2 Then
+;~ 			ReDim $aTemp[$iCount + 1][3]
+;~ 			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
+;~ 			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
+;~ 			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
+;~ 			$iCount += 1
+;~ 		EndIf
+;~ 	Next
+;~ 	_ArraySort($aTemp,0,0,0,2)
+;~ 	For $i = 0 to $iCount - 1
+;~ 		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
+;~ 		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
+;~ 		If $hHBitmapTest <> 0 Then
+;~ 			GdiDeleteHBitmap($hHBitmapTest)
+;~ 		EndIf
+;~ 	Next
 
-	Local $aTemp[1][3]
-	$iCount = 0
-	For $i = 0 To UBound($MyTroopsButton) - 1
-		If $MyTroopsButton[$i][1] = 3 Then
-			ReDim $aTemp[$iCount + 1][3]
-			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
-			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
-			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
-			$iCount += 1
-		EndIf
-	Next
-	_ArraySort($aTemp,0,0,0,2)
-	For $i = 0 to $iCount - 1
-		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
-		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
-		If $hHBitmapTest <> 0 Then
-			GdiDeleteHBitmap($hHBitmapTest)
-		EndIf
-	Next
+;~ 	Local $aTemp[1][3]
+;~ 	$iCount = 0
+;~ 	For $i = 0 To UBound($MyTroopsButton) - 1
+;~ 		If $MyTroopsButton[$i][1] = 3 Then
+;~ 			ReDim $aTemp[$iCount + 1][3]
+;~ 			$aTemp[$iCount][0] = $MyTroopsButton[$i][0]
+;~ 			$aTemp[$iCount][1] = $MyTroopsButton[$i][1]
+;~ 			$aTemp[$iCount][2] = $MyTroopsButton[$i][2]
+;~ 			$iCount += 1
+;~ 		EndIf
+;~ 	Next
+;~ 	_ArraySort($aTemp,0,0,0,2)
+;~ 	For $i = 0 to $iCount - 1
+;~ 		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperRightTroopDarkElixirStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
+;~ 		_debugSaveHBitmapToImage($hHBitmapTest, $aTemp[$i][0] & "_92", True)
+;~ 		If $hHBitmapTest <> 0 Then
+;~ 			GdiDeleteHBitmap($hHBitmapTest)
+;~ 		EndIf
+;~ 	Next
 
-	If gotoBrewSpells() = False Then Return
-	RemoveAllPreTrainTroops()
+;~ 	If gotoBrewSpells() = False Then Return
+;~ 	RemoveAllPreTrainTroops()
 
-	Local $iUpperLeftSpellStartOffset = 26
-	Local $iUpperLeftDarkSpellStartOffset = 329
+;~ 	Local $iUpperLeftSpellStartOffset = 26
+;~ 	Local $iUpperLeftDarkSpellStartOffset = 329
 
-	_CaptureRegion2()
-	Local $aTemp[1][3]
-	$iCount = 0
-	For $i = 0 To UBound($MySpellsButton) - 1
-		If $MySpellsButton[$i][1] = 0 Then
-			ReDim $aTemp[$iCount + 1][3]
-			$aTemp[$iCount][0] = $MySpellsButton[$i][0]
-			$aTemp[$iCount][1] = $MySpellsButton[$i][1]
-			$aTemp[$iCount][2] = $MySpellsButton[$i][2]
-			$iCount += 1
-		EndIf
-	Next
-	_ArraySort($aTemp,0,0,0,2)
-	For $i = 0 to 2
-		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
-		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i][0] & "_93", True)
-		If $hHBitmapTest <> 0 Then
-			GdiDeleteHBitmap($hHBitmapTest)
-		EndIf
-	Next
-	For $i = 0 to 1
-		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
-		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i + 3][0] & "_93", True)
-		If $hHBitmapTest <> 0 Then
-			GdiDeleteHBitmap($hHBitmapTest)
-		EndIf
-	Next
+;~ 	_CaptureRegion2()
+;~ 	Local $aTemp[1][3]
+;~ 	$iCount = 0
+;~ 	For $i = 0 To UBound($MySpellsButton) - 1
+;~ 		If $MySpellsButton[$i][1] = 0 Then
+;~ 			ReDim $aTemp[$iCount + 1][3]
+;~ 			$aTemp[$iCount][0] = $MySpellsButton[$i][0]
+;~ 			$aTemp[$iCount][1] = $MySpellsButton[$i][1]
+;~ 			$aTemp[$iCount][2] = $MySpellsButton[$i][2]
+;~ 			$iCount += 1
+;~ 		EndIf
+;~ 	Next
+;~ 	_ArraySort($aTemp,0,0,0,2)
+;~ 	For $i = 0 to 2
+;~ 		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
+;~ 		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i][0] & "_93", True)
+;~ 		If $hHBitmapTest <> 0 Then
+;~ 			GdiDeleteHBitmap($hHBitmapTest)
+;~ 		EndIf
+;~ 	Next
+;~ 	For $i = 0 to 1
+;~ 		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iUpperRowY1,$iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iUpperRowY2)
+;~ 		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i + 3][0] & "_93", True)
+;~ 		If $hHBitmapTest <> 0 Then
+;~ 			GdiDeleteHBitmap($hHBitmapTest)
+;~ 		EndIf
+;~ 	Next
 
-	Local $aTemp[1][3]
-	$iCount = 0
-	For $i = 0 To UBound($MySpellsButton) - 1
-		If $MySpellsButton[$i][1] = 1 Then
-			ReDim $aTemp[$iCount + 1][3]
-			$aTemp[$iCount][0] = $MySpellsButton[$i][0]
-			$aTemp[$iCount][1] = $MySpellsButton[$i][1]
-			$aTemp[$iCount][2] = $MySpellsButton[$i][2]
-			$iCount += 1
-		EndIf
-	Next
-	_ArraySort($aTemp,0,0,0,2)
-	For $i = 0 to 2
-		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
-		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i][0] & "_93", True)
-		If $hHBitmapTest <> 0 Then
-			GdiDeleteHBitmap($hHBitmapTest)
-		EndIf
-	Next
-	For $i = 0 to 1
-		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
-		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i + 3][0] & "_93", True)
-		If $hHBitmapTest <> 0 Then
-			GdiDeleteHBitmap($hHBitmapTest)
-		EndIf
-	Next
- SetLog("MakeTroopsAndSpellsTrainImage END")
-	$g_bRunState = $currentRunState
-EndFunc
+;~ 	Local $aTemp[1][3]
+;~ 	$iCount = 0
+;~ 	For $i = 0 To UBound($MySpellsButton) - 1
+;~ 		If $MySpellsButton[$i][1] = 1 Then
+;~ 			ReDim $aTemp[$iCount + 1][3]
+;~ 			$aTemp[$iCount][0] = $MySpellsButton[$i][0]
+;~ 			$aTemp[$iCount][1] = $MySpellsButton[$i][1]
+;~ 			$aTemp[$iCount][2] = $MySpellsButton[$i][2]
+;~ 			$iCount += 1
+;~ 		EndIf
+;~ 	Next
+;~ 	_ArraySort($aTemp,0,0,0,2)
+;~ 	For $i = 0 to 2
+;~ 		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
+;~ 		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i][0] & "_93", True)
+;~ 		If $hHBitmapTest <> 0 Then
+;~ 			GdiDeleteHBitmap($hHBitmapTest)
+;~ 		EndIf
+;~ 	Next
+;~ 	For $i = 0 to 1
+;~ 		Local $hHBitmapTest = GetHHBitmapArea($g_hHBitmap2, $iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset ,$iLowerRowY1,$iUpperLeftDarkSpellStartOffset + ($iSlotWidth * $i) + $iStartingOffset + 20, $iLowerRowY2)
+;~ 		_debugSaveHBitmapToImage($hHBitmapTest, "Spell" & $aTemp[$i + 3][0] & "_93", True)
+;~ 		If $hHBitmapTest <> 0 Then
+;~ 			GdiDeleteHBitmap($hHBitmapTest)
+;~ 		EndIf
+;~ 	Next
+;~  SetLog("MakeTroopsAndSpellsTrainImage END")
+;~ 	$g_bRunState = $currentRunState
+;~ EndFunc

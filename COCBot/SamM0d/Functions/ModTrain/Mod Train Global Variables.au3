@@ -116,18 +116,32 @@ Global Enum $eTrainBarb, $eTrainArch, $eTrainGiant, $eTrainGobl, $eTrainWall, $e
 ;~ ["Bowl"	, 2, 2]]
 
 
-Global $MySpellsButton[10][3] = _
-[["Lightning",  0,  0], _
-["Heal"	     ,  1,  0], _
-["Rage"      ,  0,  1], _
-["Jump"	     ,  1,  1], _
-["Freeze"	 ,  0,  2], _
-["Clone"	 ,  1,  2], _
-["Poison"	 ,  0,  3], _
-["Earth"	 ,  1,  3], _
-["Haste"	 ,  0,  4], _
-["Skeleton"	 ,  1,  4]]
+;~ Global $MySpellsButton[10][3] = _
+;~ [["Lightning",  0,  0], _
+;~ ["Heal"	     ,  1,  0], _
+;~ ["Rage"      ,  0,  1], _
+;~ ["Jump"	     ,  1,  1], _
+;~ ["Freeze"	 ,  0,  2], _
+;~ ["Clone"	 ,  1,  2], _
+;~ ["Poison"	 ,  0,  3], _
+;~ ["Earth"	 ,  1,  3], _
+;~ ["Haste"	 ,  0,  4], _
+;~ ["Skeleton"	 ,  1,  4]]
 
+Global Enum $eBrewLightning, $eBrewBoom, $eBrewHeal, $eBrewRage, $eBrewJump, $eBrewFreeze, $eBrewClone, $eBrewPoison, $eBrewEarth, $eBrewHaste, $eBrewSkeleton
+
+Global $MySpellsButton[11][3] = _
+[["Lightning",  0,  0], _
+["Boom"	     ,  1,  0], _
+["Heal"	     ,  0,  1], _
+["Rage"      ,  1,  1], _
+["Jump"	     ,  0,  2], _
+["Freeze"	 ,  1,  2], _
+["Clone"	 ,  0,  3], _
+["Poison"	 ,  0,  4], _
+["Earth"	 ,  1,  4], _
+["Haste"	 ,  0,  5], _
+["Skeleton"	 ,  1,  5]]
 
 ; updated 28 Jun 2017
 Global $MyTroopsCost[19][9] = _
