@@ -209,30 +209,57 @@ Func getSpellCost($trooptype)
 ;~ 				$iResult = getMyOcr(434+98,550,60,16,"troopcost",True)
 ;~ 		EndSwitch
 ;~ 	Else
+
+;~ 		Switch $trooptype
+;~ 			Case "Lightning"
+;~ 				$iResult = getMyOcr(0,35,451,60,14,"troopcost",True,False,True)
+;~ 			Case "Rage"
+;~ 				$iResult = getMyOcr(0,132,451,60,14,"troopcost",True,False,True)
+;~ 			Case "Freeze"
+;~ 				$iResult = getMyOcr(0,230,451,60,14,"troopcost",True,False,True)
+
+;~ 			Case "Heal"
+;~ 				$iResult = getMyOcr(0,35,551,60,14,"troopcost",True,False,True)
+;~ 			Case "Jump"
+;~ 				$iResult = getMyOcr(0,132,551,60,14,"troopcost",True,False,True)
+;~ 			Case "Clone"
+;~ 				$iResult = getMyOcr(0,230,551,60,14,"troopcost",True,False,True)
+
+;~ 			Case "Poison"
+;~ 				$iResult = getMyOcr(0,336,451,60,14,"troopcost",True,False,True)
+;~ 			Case "Earth"
+;~ 				$iResult = getMyOcr(0,336,551,60,14,"troopcost",True,False,True)
+;~ 			Case "Haste"
+;~ 				$iResult = getMyOcr(0,434,451,60,14,"troopcost",True,False,True)
+;~ 			Case "Skeleton"
+;~ 				$iResult = getMyOcr(0,434,551,60,14,"troopcost",True,False,True)
+;~ 		EndSwitch
+
 		Switch $trooptype
 			Case "Lightning"
 				$iResult = getMyOcr(0,35,451,60,14,"troopcost",True,False,True)
-			Case "Rage"
-				$iResult = getMyOcr(0,132,451,60,14,"troopcost",True,False,True)
-			Case "Freeze"
-				$iResult = getMyOcr(0,230,451,60,14,"troopcost",True,False,True)
-
 			Case "Heal"
-				$iResult = getMyOcr(0,35,551,60,14,"troopcost",True,False,True)
+				$iResult = getMyOcr(0,132,451,60,14,"troopcost",True,False,True)
 			Case "Jump"
-				$iResult = getMyOcr(0,132,551,60,14,"troopcost",True,False,True)
+				$iResult = getMyOcr(0,230,451,60,14,"troopcost",True,False,True)
 			Case "Clone"
+				$iResult = getMyOcr(0,328,451,60,14,"troopcost",True,False,True)
+
+			Case "Rage"
+				$iResult = getMyOcr(0,132,551,60,14,"troopcost",True,False,True)
+			Case "Freeze"
 				$iResult = getMyOcr(0,230,551,60,14,"troopcost",True,False,True)
 
 			Case "Poison"
-				$iResult = getMyOcr(0,336,451,60,14,"troopcost",True,False,True)
+				$iResult = getMyOcr(0,430,451,60,14,"troopcost",True,False,True)
 			Case "Earth"
-				$iResult = getMyOcr(0,336,551,60,14,"troopcost",True,False,True)
+				$iResult = getMyOcr(0,430,551,60,14,"troopcost",True,False,True)
 			Case "Haste"
-				$iResult = getMyOcr(0,434,451,60,14,"troopcost",True,False,True)
+				$iResult = getMyOcr(0,528,451,60,14,"troopcost",True,False,True)
 			Case "Skeleton"
-				$iResult = getMyOcr(0,434,551,60,14,"troopcost",True,False,True)
+				$iResult = getMyOcr(0,528,551,60,14,"troopcost",True,False,True)
 		EndSwitch
+
 ;~ 	EndIf
 	If $g_iSamM0dDebug = 1 Then SetLog("$iResult: " & $iResult)
 	If $iResult = "" Then $iResult = 0
